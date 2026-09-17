@@ -31,4 +31,4 @@ IronPulse được phát triển với các mục tiêu chính:
 
 ---
 
-> **IronPulse** – Smart Gym Management Database System
+> **IronPulse** – Gym Management Database System
