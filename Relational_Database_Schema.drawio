@@ -1,0 +1,492 @@
+<mxfile host="app.diagrams.net" agent="IronPulse Schema Generator">
+  <diagram id="ironpulse-relational-schema" name="IronPulse Relational Schema Mapping (18 Tables)">
+    <mxGraphModel dx="2713" dy="1025" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2520" pageHeight="1420" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lbl_person" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="person" vertex="1">
+          <mxGeometry height="38" width="85" x="205" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__ssn" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="ssn" vertex="1">
+          <mxGeometry height="38" width="88" x="396" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__full_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="full_name" vertex="1">
+          <mxGeometry height="38" width="96" x="484" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__email" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="email" vertex="1">
+          <mxGeometry height="38" width="88" x="580" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__phone" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="phone" vertex="1">
+          <mxGeometry height="38" width="88" x="668" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__date_of_birth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="date_of_birth" vertex="1">
+          <mxGeometry height="38" width="127" x="756" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__gender" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="gender" vertex="1">
+          <mxGeometry height="38" width="88" x="883" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__address" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="address" vertex="1">
+          <mxGeometry height="38" width="88" x="971" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__created_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="created_at" vertex="1">
+          <mxGeometry height="38" width="104" x="1059" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_person__password_hash" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="password_hash" vertex="1">
+          <mxGeometry height="38" width="127" x="1163" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_staff" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="staff" vertex="1">
+          <mxGeometry height="38" width="85" x="205" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_staff__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="300" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_staff__position" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="position" vertex="1">
+          <mxGeometry height="38" width="88" x="396" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_staff__hire_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="hire_date" vertex="1">
+          <mxGeometry height="38" width="96" x="484" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_staff__employment_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="employment_status" vertex="1">
+          <mxGeometry height="38" width="159" x="580" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_member" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="member" vertex="1">
+          <mxGeometry height="38" width="85" x="205" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="300" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member__emergency_contact_phone" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="emergency_contact_phone" vertex="1">
+          <mxGeometry height="38" width="205" x="396" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member__join_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="join_date" vertex="1">
+          <mxGeometry height="38" width="96" x="601" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member__health_notes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="health_notes" vertex="1">
+          <mxGeometry height="38" width="120" x="697" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_membership" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="membership" vertex="1">
+          <mxGeometry height="38" width="102" x="188" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__membership_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="membership_id" vertex="1">
+          <mxGeometry height="38" width="127" x="300" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="427" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__plan_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="plan_id" vertex="1">
+          <mxGeometry height="38" width="88" x="523" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__start_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="start_date" vertex="1">
+          <mxGeometry height="38" width="104" x="611" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__end_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="end_date" vertex="1">
+          <mxGeometry height="38" width="88" x="715" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="status" vertex="1">
+          <mxGeometry height="38" width="88" x="803" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__total_price" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="total_price" vertex="1">
+          <mxGeometry height="38" width="112" x="891" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership__created_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="created_at" vertex="1">
+          <mxGeometry height="38" width="104" x="1003" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_payment" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="payment" vertex="1">
+          <mxGeometry height="38" width="85" x="205" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_payment__payment_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="payment_id" vertex="1">
+          <mxGeometry height="38" width="104" x="300" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_payment__membership_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="membership_id" vertex="1">
+          <mxGeometry height="38" width="127" x="404" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_payment__amount" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="amount" vertex="1">
+          <mxGeometry height="38" width="88" x="531" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_payment__payment_time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="payment_time" vertex="1">
+          <mxGeometry height="38" width="120" x="619" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_payment__payment_method" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="payment_method" vertex="1">
+          <mxGeometry height="38" width="135" x="739" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_member_service_usage" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="member_service_usage" vertex="1">
+          <mxGeometry height="38" width="186" x="104" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__usage_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="usage_id" vertex="1">
+          <mxGeometry height="38" width="88" x="300" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__membership_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="membership_id" vertex="1">
+          <mxGeometry height="38" width="127" x="388" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__service_type_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="service_type_id" vertex="1">
+          <mxGeometry height="38" width="143" x="515" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__session_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="session_id" vertex="1">
+          <mxGeometry height="38" width="104" x="658" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__used_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="used_at" vertex="1">
+          <mxGeometry height="38" width="88" x="762" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_member_service_usage__usage_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="usage_status" vertex="1">
+          <mxGeometry height="38" width="120" x="850" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_service_type" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="service_type" vertex="1">
+          <mxGeometry height="38" width="119" x="171" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_service_type__service_type_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="service_type_id" vertex="1">
+          <mxGeometry height="38" width="143" x="300" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_service_type__service_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="service_name" vertex="1">
+          <mxGeometry height="38" width="120" x="443" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_service_type__description" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="description" vertex="1">
+          <mxGeometry height="38" width="112" x="563" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_plan_inclusion" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="plan_inclusion" vertex="1">
+          <mxGeometry height="38" width="136" x="154" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_plan_inclusion__plan_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="plan_id" vertex="1">
+          <mxGeometry height="38" width="88" x="300" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_plan_inclusion__service_type_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="service_type_id" vertex="1">
+          <mxGeometry height="38" width="143" x="388" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_plan_inclusion__quota_per_cycle" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="quota_per_cycle" vertex="1">
+          <mxGeometry height="38" width="143" x="531" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_membership_plan" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="membership_plan" vertex="1">
+          <mxGeometry height="38" width="144" x="146" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership_plan__plan_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="plan_id" vertex="1">
+          <mxGeometry height="38" width="88" x="300" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership_plan__plan_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="plan_name" vertex="1">
+          <mxGeometry height="38" width="96" x="388" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership_plan__duration_months" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="duration_months" vertex="1">
+          <mxGeometry height="38" width="143" x="484" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership_plan__base_price" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="base_price" vertex="1">
+          <mxGeometry height="38" width="104" x="627" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_membership_plan__description" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="description" vertex="1">
+          <mxGeometry height="38" width="112" x="731" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_trainer" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="trainer" vertex="1">
+          <mxGeometry height="38" width="85" x="1565" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_trainer__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="1660" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_trainer__hire_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="hire_date" vertex="1">
+          <mxGeometry height="38" width="96" x="1756" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="col_trainer__employment_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="employment_status" vertex="1">
+          <mxGeometry height="38" width="159" x="1852" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_trainer_certification" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="trainer_certification" vertex="1">
+          <mxGeometry height="38" width="194" x="1456" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_trainer_certification__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="1660" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="col_trainer_certification__certification" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="certification" vertex="1">
+          <mxGeometry height="38" width="127" x="1756" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_room" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="room" vertex="1">
+          <mxGeometry height="38" width="85" x="1565" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_room__room_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="room_id" vertex="1">
+          <mxGeometry height="38" width="88" x="1660" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_room__room_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="room_name" vertex="1">
+          <mxGeometry height="38" width="96" x="1748" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_room__room_type" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="room_type" vertex="1">
+          <mxGeometry height="38" width="96" x="1844" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="col_room__status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="status" vertex="1">
+          <mxGeometry height="38" width="88" x="1940" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_equipment" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="equipment" vertex="1">
+          <mxGeometry height="38" width="94" x="1556" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment__equipment_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="equipment_id" vertex="1">
+          <mxGeometry height="38" width="120" x="1660" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment__equipment_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="equipment_name" vertex="1">
+          <mxGeometry height="38" width="135" x="1780" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment__serial_number" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="serial_number" vertex="1">
+          <mxGeometry height="38" width="127" x="1915" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment__room_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="room_id" vertex="1">
+          <mxGeometry height="38" width="88" x="2042" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment__status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="status" vertex="1">
+          <mxGeometry height="38" width="88" x="2130" y="515" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_equipment_maintenance_log" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="equipment_maintenance_log" vertex="1">
+          <mxGeometry height="38" width="228" x="1422" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__maintenance_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="maintenance_id" vertex="1">
+          <mxGeometry height="38" width="135" x="1660" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__equipment_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="equipment_id" vertex="1">
+          <mxGeometry height="38" width="120" x="1795" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__start_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="start_date" vertex="1">
+          <mxGeometry height="38" width="104" x="1915" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__cost" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="cost" vertex="1">
+          <mxGeometry height="38" width="88" x="2019" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__end_date" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="end_date" vertex="1">
+          <mxGeometry height="38" width="88" x="2107" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="col_equipment_maintenance_log__description" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="description" vertex="1">
+          <mxGeometry height="38" width="112" x="2195" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_session" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="session" vertex="1">
+          <mxGeometry height="38" width="85" x="1565" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__session_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="session_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1660" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__trainer_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="trainer_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1764" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__room_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="room_id" vertex="1">
+          <mxGeometry height="38" width="88" x="1868" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__start_time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="start_time" vertex="1">
+          <mxGeometry height="38" width="104" x="1956" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__end_time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="end_time" vertex="1">
+          <mxGeometry height="38" width="88" x="2060" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__session_type" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="session_type" vertex="1">
+          <mxGeometry height="38" width="120" x="2148" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="col_session__created_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="created_at" vertex="1">
+          <mxGeometry height="38" width="104" x="2268" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_pt_session" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="pt_session" vertex="1">
+          <mxGeometry height="38" width="102" x="1548" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_pt_session__session_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="session_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1660" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_pt_session__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="1764" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="col_pt_session__training_focus" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="training_focus" vertex="1">
+          <mxGeometry height="38" width="135" x="1860" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_group_class_session" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="group_class_session" vertex="1">
+          <mxGeometry height="38" width="178" x="1472" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_group_class_session__session_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="session_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1660" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_group_class_session__class_name" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="class_name" vertex="1">
+          <mxGeometry height="38" width="104" x="1764" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_group_class_session__category" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="category" vertex="1">
+          <mxGeometry height="38" width="88" x="1868" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="col_group_class_session__max_capacity" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="max_capacity" vertex="1">
+          <mxGeometry height="38" width="120" x="1956" y="1105" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_booking" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fontSize=14;fontStyle=1;fontColor=#000000;" value="booking" vertex="1">
+          <mxGeometry height="38" width="85" x="1565" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__booking_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontStyle=4;fontColor=#000000;" value="booking_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1660" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__person_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="person_id" vertex="1">
+          <mxGeometry height="38" width="96" x="1764" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__session_id" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="session_id" vertex="1">
+          <mxGeometry height="38" width="104" x="1860" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__booked_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="booked_at" vertex="1">
+          <mxGeometry height="38" width="96" x="1964" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__booking_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="booking_status" vertex="1">
+          <mxGeometry height="38" width="135" x="2060" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="col_booking__cancelled_at" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" value="cancelled_at" vertex="1">
+          <mxGeometry height="38" width="120" x="2195" y="1250" as="geometry" />
+        </mxCell>
+        <mxCell id="fk_01_staff_person_id_to_person_person_id" edge="1" parent="1" source="col_staff__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_person__person_id" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk_02_member_person_id_to_person_person_id" edge="1" parent="1" source="col_member__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.3;exitY=0.0;exitDx=0;exitDy=0;entryX=0.25;entryY=1.0;entryDx=0;entryDy=0;" target="col_person__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="329" y="325" />
+              <mxPoint x="165" y="325" />
+              <mxPoint x="165" y="160" />
+              <mxPoint x="324" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_03_trainer_person_id_to_person_person_id" edge="1" parent="1" source="col_trainer__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;" target="col_person__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1708" y="36" />
+              <mxPoint x="348" y="36" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_04_trainer_certification_person_id_to_trainer_person_id" edge="1" parent="1" source="col_trainer_certification__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_trainer__person_id" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk_05_membership_person_id_to_member_person_id" edge="1" parent="1" source="col_membership__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.25;entryY=1.0;entryDx=0;entryDy=0;" target="col_member__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="475" y="468" />
+              <mxPoint x="324" y="468" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_06_membership_plan_id_to_membership_plan_plan_id" edge="1" parent="1" source="col_membership__plan_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.75;entryY=0.0;entryDx=0;entryDy=0;" target="col_membership_plan__plan_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="567" y="582" />
+              <mxPoint x="1145" y="582" />
+              <mxPoint x="1145" y="1205" />
+              <mxPoint x="366" y="1205" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_07_payment_membership_id_to_membership_membership_id" edge="1" parent="1" source="col_payment__membership_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_membership__membership_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="468" y="620" />
+              <mxPoint x="364" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_08_member_service_usage_membership_id_to_membership_membership_id" edge="1" parent="1" source="col_member_service_usage__membership_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.25;entryY=1.0;entryDx=0;entryDy=0;" target="col_membership__membership_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="452" y="768" />
+              <mxPoint x="145" y="768" />
+              <mxPoint x="145" y="595" />
+              <mxPoint x="332" y="595" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_09_member_service_usage_service_type_id_to_service_type_service_type_id" edge="1" parent="1" source="col_member_service_usage__service_type_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;" target="col_service_type__service_type_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="586" y="905" />
+              <mxPoint x="372" y="905" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_10_member_service_usage_session_id_to_session_session_id" edge="1" parent="1" source="col_member_service_usage__session_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;" target="col_session__session_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="768" />
+              <mxPoint x="1712" y="768" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_11_plan_inclusion_service_type_id_to_service_type_service_type_id" edge="1" parent="1" source="col_plan_inclusion__service_type_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_service_type__service_type_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="1055" />
+              <mxPoint x="372" y="1055" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_12_plan_inclusion_plan_id_to_membership_plan_plan_id" edge="1" parent="1" source="col_plan_inclusion__plan_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;" target="col_membership_plan__plan_id" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk_13_equipment_room_id_to_room_room_id" edge="1" parent="1" source="col_equipment__room_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_room__room_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2086" y="468" />
+              <mxPoint x="1704" y="468" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_14_equipment_maintenance_log_equipment_id_to_equipment_equipment_id" edge="1" parent="1" source="col_equipment_maintenance_log__equipment_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_equipment__equipment_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1855" y="615" />
+              <mxPoint x="1720" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_15_session_room_id_to_room_room_id" edge="1" parent="1" source="col_session__room_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.75;entryY=1.0;entryDx=0;entryDy=0;" target="col_room__room_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1912" y="735" />
+              <mxPoint x="2415" y="735" />
+              <mxPoint x="2415" y="442" />
+              <mxPoint x="1726" y="442" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_16_session_trainer_id_to_trainer_person_id" edge="1" parent="1" source="col_session__trainer_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.25;entryY=1.0;entryDx=0;entryDy=0;" target="col_trainer__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1816" y="735" />
+              <mxPoint x="1365" y="735" />
+              <mxPoint x="1365" y="160" />
+              <mxPoint x="1684" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_17_pt_session_session_id_to_session_session_id" edge="1" parent="1" source="col_pt_session__session_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_session__session_id" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk_18_pt_session_person_id_to_member_person_id" edge="1" parent="1" source="col_pt_session__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.75;entryY=1.0;entryDx=0;entryDy=0;" target="col_member__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1812" y="1030" />
+              <mxPoint x="1245" y="1030" />
+              <mxPoint x="1245" y="424" />
+              <mxPoint x="372" y="424" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_19_group_class_session_session_id_to_session_session_id" edge="1" parent="1" source="col_group_class_session__session_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.25;entryY=1.0;entryDx=0;entryDy=0;" target="col_session__session_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1712" y="1060" />
+              <mxPoint x="1445" y="1060" />
+              <mxPoint x="1445" y="882" />
+              <mxPoint x="1686" y="882" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_20_booking_session_id_to_group_class_session_session_id" edge="1" parent="1" source="col_booking__session_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=0.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_group_class_session__session_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1912" y="1200" />
+              <mxPoint x="1712" y="1200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fk_21_booking_person_id_to_member_person_id" edge="1" parent="1" source="col_booking__person_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=classic;endFill=1;jumpStyle=arc;jumpSize=6;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;" target="col_member__person_id" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1812" y="1325" />
+              <mxPoint x="1205" y="1325" />
+              <mxPoint x="1205" y="446" />
+              <mxPoint x="348" y="446" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
