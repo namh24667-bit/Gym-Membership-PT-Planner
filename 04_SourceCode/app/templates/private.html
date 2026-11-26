@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="surface{{ ' surface-wide' if local02 or local03_enabled() else '' }}" aria-labelledby="page-title">
+  <div class="surface-header"><h1 id="page-title">{{ title }}</h1></div>
+  {% if details is defined %}
+    <div class="form-fields">
+      <dl>
+        {% for label, value in details %}<dt>{{ label }}</dt><dd>{{ value if value is not none else '—' }}</dd>{% endfor %}
+      </dl>
+      <a class="btn btn-outline-secondary" href="{{ url_for('pages.' ~ role ~ '_area') }}">Quay lại</a>
+    </div>
+  {% elif role in ('member', 'trainer') %}
+    <div class="form-fields">
+      <h2>{{ 'Gói tập của tôi' if role == 'member' else 'Lịch dạy của tôi' }}</h2>
+      {% if local02 and role == 'member' %}<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.catalog') }}">Xem danh mục gói tập</a></p>{% endif %}
+      {% if local03_enabled() and role == 'member' %}<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.member_schedule') }}">Lịch đã đặt</a> <a class="btn action-button" href="{{ url_for('pages.schedule_form') }}">Đặt lịch PT</a> <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_classes') }}">Lớp nhóm</a></p>{% endif %}
+      {% if local03_enabled() and role == 'trainer' %}<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.trainer_schedule') }}">Lịch dạy và danh sách hội viên</a></p>{% endif %}
+      {% if records %}
+      <ul class="record-list">
+        {% for record_id, label in records %}
+        <li><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.membership_detail' if role == 'member' else 'pages.trainer_session_detail', record_id=record_id) }}">{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}<p>Chưa có dữ liệu.</p>{% endif %}
+    </div>
+  {% elif local02 and role == 'staff' %}
+    <div class="form-fields">
+      <div class="page-actions">
+        <a class="btn action-button" href="{{ url_for('pages.staff_register') }}">Đăng ký hội viên tại quầy</a>
+        {% if identity and 'management' in identity.roles and local04_enabled() %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.management_area') }}">Tổng quan quản lý</a>{% endif %}
+      </div>
+      <div class="portal-grid">
+        <section class="workspace-panel"><h2>Tiếp nhận hội viên</h2><ul class="record-list">
+          <li><a class="btn btn-outline-secondary" href="{{ url_for('pages.member_directory' if local04_enabled() else 'pages.staff_members') }}">Danh sách hội viên</a></li>
+          {% if local03_enabled() %}
+          <li><div class="page-actions">
+            <a class="btn btn-outline-secondary" href="{{ url_for('pages.staff_trainers') }}">Tra cứu huấn luyện viên</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('pages.staff_classes') }}">Tra cứu lớp nhóm</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('pages.operations_schedule') }}">Lịch PT và lớp nhóm</a>
+          </div></li>
+          {% endif %}
+        </ul></section>
+        <section class="workspace-panel"><h2>Hợp đồng và thu tiền</h2><ul class="record-list">
+          <li><a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_contracts' if local04_enabled() else 'pages.staff_contracts') }}">Hợp đồng, thu tiền và kích hoạt</a></li>
+          {% if local04_enabled() %}<li><a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_payments') }}">Tra cứu thanh toán và biên lai</a></li>{% endif %}
+        </ul></section>
+      </div>
+    </div>
+  {% elif local03_enabled() and role == 'management' %}
+    <p class="form-fields"><a class="btn btn-outline-secondary" href="{{ url_for('pages.management_schedule') }}">Quản lý lớp nhóm và gói hết hạn</a></p>
+  {% else %}
+    <p class="form-fields">Các chức năng nghiệp vụ chưa khả dụng.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% from 'components.html' import action_link, notice %}
+{% from 'local03/time.html' import interval %}
+{% from 'local03/class_actions.html' import class_status, eligibility %}
+{% block title %}{{ item.name if item else 'Đăng ký lớp nhóm' }}{% endblock %}
+{% block content %}
+<section class="surface surface-wide" aria-labelledby="class-title">
+  <header class="surface-header">
+    <h1 id="class-title">{{ item.name if item else ('Hủy chỗ lớp nhóm' if cancelling else 'Đăng ký lớp nhóm') }}</h1>
+    {% if item %}<p>{{ item.category }}</p>{% endif %}
+  </header>
+  <div class="form-fields">
+    {% if error %}<div class="alert alert-warning class-feedback" role="alert">
+      <h2>{{ 'Chưa thể hủy chỗ' if cancelling else 'Chưa thể đăng ký lớp' }}</h2>
+      <p class="mb-0">{{ error }}</p>
+    </div>{% endif %}
+    {% if item %}
+      <div class="portal-grid">
+        <dl class="workspace-panel record-details">
+          <dt>Trạng thái lớp</dt><dd>{{ class_status(item, class_states) }}</dd>
+          <dt>Huấn luyện viên</dt><dd>{{ item.trainer }}</dd>
+          <dt>Phòng tập</dt><dd>{{ item.room }}</dd>
+          <dt>Khung giờ</dt><dd>{{ interval(item.start, item.end) }}</dd>
+          <dt>Đã đăng ký</dt><dd>{{ item.enrolled }}/{{ item.capacity }} học viên</dd>
+          <dt>Số chỗ còn lại</dt><dd>{{ [0, item.remaining]|max }} chỗ</dd>
+        </dl>
+        <section class="workspace-panel">
+          <h2>Điều kiện đăng ký của bạn</h2>
+          {{ eligibility(item, reasons, token, selected_week) }}
+        </section>
+      </div>
+    {% endif %}
+    <div class="page-actions">
+      {{ action_link(url_for('pages.member_classes', week=selected_week), 'Về danh sách lớp') }}
+      {% if cancelling %}{{ action_link(url_for('pages.member_schedule'), 'Xem lịch đã đặt') }}{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

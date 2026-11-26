@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% from 'components.html' import action_link, icon %}
+{% from 'brand.html' import mark %}
+{% from 'local02/format.html' import money %}
+{% from 'local02/benefits.html' import benefit_list %}
+{% block title %}{{ plan.name if plan else 'Tư vấn gói tập' if advice else 'Danh mục gói tập' }}{% endblock %}
+{% block content %}
+<section class="surface {{ 'surface-wide' if plan else 'surface-admin' }} catalog-surface" aria-labelledby="catalog-title">
+  <header class="surface-header catalog-heading">
+    {{ mark() }}
+    <div>
+      <h1 id="catalog-title">{{ self.title() }}</h1>
+      {% if group_only %}<p>Gói đang mở bán có lượt lớp nhóm. Quyền lợi áp dụng khi hợp đồng có hiệu lực.</p>
+      {% elif not plan %}<p>So sánh giá, thời hạn và số lượt sử dụng của các gói đang mở bán.</p>{% endif %}
+    </div>
+  </header>
+  {% if plan %}
+    {% if error %}<p class="alert alert-danger" role="alert">{{ error }}</p>{% endif %}
+    <div class="plan-detail-layout">
+      <section class="plan-detail-benefits" aria-labelledby="plan-rights">
+        <h2 id="plan-rights">Quyền lợi mỗi chu kỳ</h2>
+        <p class="plan-purpose">{{ plan.purpose }}</p>
+        {{ benefit_list(plan.benefits) }}
+      </section>
+      <section class="plan-detail-order" aria-labelledby="plan-order">
+        <h2 id="plan-order">Đăng ký gói</h2>
+        <p class="plan-price"><strong>{{ money(plan.price) }}</strong></p>
+        <p class="plan-term">{{ icon('calendar', 17) }} {{ plan.months }} tháng</p>
+        <form method="post" data-single-submit>
+          <input type="hidden" name="csrf_token" value="{{ token }}">
+          <input type="hidden" name="request_id" value="{{ request_id }}">
+          <input type="hidden" name="amount" value="{{ '{:.2f}'.format(plan.price) }}">
+          <p class="plan-purpose">Sau khi lập hợp đồng, bạn thanh toán tại quầy. Quyền lợi sử dụng từ ngày gói có hiệu lực.</p>
+          <button class="btn action-button" type="submit">Đăng ký gói tập</button>
+        </form>
+      </section>
+    </div>
+  {% elif plans %}
+    <ul class="plan-grid">
+      {% for option in plans %}
+      <li class="plan-card" aria-labelledby="catalog-plan-{{ option.id }}">
+        <div class="plan-card-header">
+          <span class="plan-icon">{{ icon('card', 20) }}</span>
+          <h2 id="catalog-plan-{{ option.id }}">{{ option.name }}</h2>
+          <p class="plan-purpose">{{ option.purpose }}</p>
+          <p class="plan-price"><strong>{{ money(option.price) }}</strong></p>
+          <p class="plan-term">{{ icon('calendar', 16) }} {{ option.months }} tháng</p>
+        </div>
+        {{ benefit_list(option.benefits) }}
+        {% if not advice %}
+          {{ action_link(url_for('pages.plan_detail', plan_id=option.id), 'Xem gói tập', primary=true,
+                         accessible_name='Xem gói tập ' ~ option.name) }}
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty-panel">{{ 'Chưa có gói đang mở bán có lượt lớp nhóm.' if group_only
+    else 'Chưa có gói đang mở bán. Vui lòng kiểm tra lại sau.' }}</p>
+  {% endif %}
+  <div class="page-actions catalog-footer">
+    {% if plan %}{{ action_link(url_for('pages.catalog'), 'Về danh mục gói tập') }}
+    {% elif group_only %}
+      {{ action_link(url_for('pages.staff_plan_catalog' if advice else 'pages.catalog'), 'Xem tất cả gói tập') }}
+      {% if advice %}{{ action_link(url_for('pages.staff_classes'), 'Về tra cứu lớp nhóm') }}
+      {% else %}{{ action_link(url_for('pages.member_classes'), 'Về danh sách lớp') }}{% endif %}
+    {% elif advice %}{{ action_link(url_for('pages.staff_area'), 'Về khu vực tại quầy') }}
+    {% else %}{{ action_link(url_for('pages.member_area'), 'Về gói tập của tôi') }}{% endif %}
+  </div>
+</section>
+{% endblock %}

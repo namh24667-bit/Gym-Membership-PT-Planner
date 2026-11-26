@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% from 'components.html' import action_link %}
+{% from 'local03/time.html' import interval %}
+{% from 'local03/class_actions.html' import class_status, eligibility %}
+{% from 'local04/ui.html' import week_select %}
+{% block title %}Lớp nhóm{% endblock %}
+{% block content %}
+<section class="surface surface-admin" data-agenda{% if selected_week %} data-selected-week="{{ selected_week }}"{% endif %}>
+  <header class="surface-header">
+    <h1>Lớp nhóm</h1>
+    <p>Kiểm tra quyền lợi và số chỗ trước khi đăng ký. Hệ thống xác nhận lại khi bạn gửi yêu cầu.</p>
+  </header>
+  <div class="form-fields">
+    <div class="page-actions">
+      {{ action_link(url_for('pages.member_schedule'), 'Lịch đã đặt') }}
+      {{ action_link(url_for('pages.member_area'), 'Gói tập và lượt còn lại') }}
+    </div>
+    {{ week_select('classes-week') }}
+    <div class="table-responsive" role="region" aria-label="Lịch lớp nhóm" tabindex="0">
+      <table class="table align-middle session-table class-catalog" role="table">
+        <thead role="rowgroup"><tr role="row"><th scope="col">Lớp</th><th scope="col">Huấn luyện viên và phòng</th>
+          <th scope="col">Khung giờ</th><th scope="col">Sức chứa</th><th scope="col">Đăng ký</th></tr></thead>
+        <tbody role="rowgroup">
+        {% for item in records %}
+          <tr role="row" data-week="{{ item.week }}">
+            <td role="cell">
+              <strong>{{ item.name }}</strong><br><small>{{ item.category }}</small><br>
+              <a class="btn btn-outline-secondary row-action mt-1" aria-label="Xem chi tiết {{ item.name }}"
+                 href="{{ url_for('pages.member_class_detail', session_id=item.id, week=item.week) }}">Xem chi tiết</a>
+            </td>
+            <td role="cell"><span class="mobile-cell-label" aria-hidden="true">Huấn luyện viên</span>
+              {{ item.trainer }}<br><small>{{ item.room }}</small></td>
+            <td role="cell"><span class="mobile-cell-label" aria-hidden="true">Khung giờ</span>{{ interval(item.start, item.end) }}</td>
+            <td role="cell"><span class="mobile-cell-label" aria-hidden="true">Sức chứa</span>{{ item.enrolled }}/{{ item.capacity }}<br>
+              <small>Còn {{ [0, item.remaining]|max }} chỗ</small><br>{{ class_status(item, class_states) }}</td>
+            <td role="cell">{{ eligibility(item, reasons, token, item.week) }}</td>
+          </tr>
+        {% else %}<tr role="row"><td role="cell" colspan="5">Chưa có lịch lớp nhóm.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

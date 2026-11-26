@@ -1,0 +1,54 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import action_link, field %}
+{% from 'local04/ui.html' import badge, dates %}
+{% from 'local04/staff_directory_ui.html' import pagination %}
+{% from 'local03/time.html' import interval, moment %}
+{% block heading %}{{ trainer.name }}{% endblock %}
+{% block intro %}<p>Huấn luyện viên #{{ trainer.id }}</p>{% endblock %}
+{% block heading_actions %}{{ action_link(url_for('pages.staff_trainers'), 'Về danh sách HLV') }}{% endblock %}
+{% block screen %}
+<div class="portal-grid">
+  <section class="workspace-panel">
+    <h2>Thông tin làm việc</h2>
+    <dl class="directory-facts">
+      <dt>Trạng thái</dt><dd>{{ badge(employment[trainer.status], trainer.status) }}</dd>
+      <dt>Buổi dạy tiếp theo</dt><dd>{{ moment(trainer.next_time) ~ ' · ' ~ (trainer.next_class or 'PT cá nhân')
+        if trainer.next_time else 'Chưa có buổi công bố' }}</dd>
+    </dl>
+  </section>
+  <section class="workspace-panel">
+    <h2>Chuyên môn và chứng chỉ</h2>
+    {% if trainer.certifications %}
+      <ul class="record-list">{% for item in trainer.certifications.splitlines() %}<li>{{ item }}</li>{% endfor %}</ul>
+    {% else %}<p>Chưa ghi nhận chứng chỉ.</p>{% endif %}
+  </section>
+</div>
+<section class="admin-section" id="teaching" aria-labelledby="teaching-title">
+  <h2 id="teaching-title">Lịch dạy</h2>
+  <form method="get" action="{{ url_for('pages.staff_trainer', trainer_id=trainer.id, _anchor='teaching') }}" class="filter-bar">
+    {{ dates(first, last) }}
+    {{ field('kind', 'Loại buổi dạy', options=kinds.items(), value=kind) }}
+    <button class="btn btn-outline-secondary" type="submit">Lọc lịch dạy</button>
+    {{ action_link(url_for('pages.staff_trainer', trainer_id=trainer.id, _anchor='teaching'), 'Xem 7 ngày tới') }}
+  </form>
+  {{ pagination(total, page, page_count, previous, following) }}
+  <div class="portal-grid">
+    {% for key, caption in kinds.items() %}
+    {% if not kind or kind == key %}
+    <section class="workspace-panel">
+      <h3 class="h6">{{ caption }}</h3>
+      <ul class="record-list">
+      {% for item in rows if item.kind == key %}
+        <li>
+          <strong>{{ item.class_name or 'PT cá nhân' }}</strong><br>
+          <span>{{ interval(item.start, item.end) }} · {{ item.room }}</span>
+          {% if item.class_name %}<div class="mt-2">{{ action_link(url_for('pages.staff_class', class_id=item.id), 'Xem lớp') }}</div>{% endif %}
+        </li>
+      {% else %}<li>Chưa có buổi phù hợp trên trang này.</li>{% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'preview/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'preview/ui.html' import badge, money, payment_method, link, locked, pending, panel, table, controls, facts, filters, empty_row %}
+{% block styles %}{{ super() }}{% if page == 'members' %}<script src="{{ url_for('static', filename='preview-search.js') }}" defer></script>{% endif %}{% endblock %}
+{% block intro %}
+{% if page == 'contracts' %}<p>Tra cứu hợp đồng theo trạng thái và mở chi tiết thu tiền.</p>
+{% elif page == 'members' %}<p>Tìm theo tên, số điện thoại hoặc email trong dữ liệu minh họa.</p>
+{% elif page == 'usage' %}<p>Ghi nhận lượt dịch vụ không gắn với buổi PT hoặc lớp nhóm.</p>
+{% elif page == 'registration' %}<p>Trường có dấu <span class="required-mark">*</span> là bắt buộc.</p>
+{% endif %}
+{% endblock %}
+{% block heading_action %}
+{% if page == 'members' %}{{ link('Đăng ký hội viên tại quầy', role, 'registration') }}
+{% elif role == 'management' and page in ('rooms', 'equipment') %}
+<a class="detail-link" href="{{ url_for('preview.screen', role=role, page='assets', _anchor='new-room' if page == 'rooms' else 'new-equipment') }}">{{ 'Thêm phòng mới' if page == 'rooms' else 'Thêm thiết bị mới' }}</a>
+{% endif %}
+{% endblock %}
+
+{% block screen %}
+{% if page == 'contracts' %}
+  {% call panel('Danh sách hợp đồng') %}
+    {{ filters(role, page, 'status', [('', 'Tất cả'), ('PENDING_PAYMENT', 'Chờ thanh toán'),
+       ('PENDING_ACTIVATION', 'Chờ kích hoạt'), ('ACTIVE', 'Đang hoạt động'), ('EXPIRED', 'Hết hạn')],
+       filter_value, 'Lọc trạng thái hợp đồng') }}
+    {% call table('Hợp đồng gói tập', ['Mã hợp đồng', 'Hội viên / gói tập', 'Trạng thái', 'Hiệu lực', 'Giá đã chốt', 'Chi tiết']) %}
+      {% for key, item in data.memberships.items() if not filter_value or item.status == filter_value %}
+      <tr><td>{{ key }}</td><td><strong>{{ item.member }}</strong><br>{{ data.plans[item.plan].name }}</td>
+        <td>{{ badge(item.status) }}</td><td>{{ (item.start ~ ' – ' ~ item.end) if item.start else '—' }}</td>
+        <td>{{ money(item.price) }}</td><td>{{ link('Xem hợp đồng ' ~ key, role, 'payment', key) }}</td></tr>
+      {% else %}{{ empty_row(6) }}{% endfor %}
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'payment' %}
+  {% set plan = data.plans[record.plan] %}
+  {% call panel('Hợp đồng ' ~ record_id) %}
+    {{ facts([('Hội viên', record.member), ('Gói tập', plan.name), ('Trạng thái', badge(record.status)),
+              ('Thời hạn mẫu gói', plan.months ~ ' tháng'), ('Bắt đầu', record.start), ('Hết hạn', record.end),
+              ('Giá đã chốt', money(record.price))]) }}
+  {% endcall %}
+  {% if record.payment %}
+    {% call panel('Biên lai thanh toán') %}
+      {{ facts([('Số tiền', money(record.price)), ('Phương thức', payment_method(record.payment[0])),
+                ('Thời điểm thanh toán', record.payment[1])]) }}
+    {% endcall %}
+  {% endif %}
+  {% if record.status == 'PENDING_PAYMENT' %}
+    {% call panel('Ghi nhận thanh toán') %}
+      {{ pending('Thanh toán trước giữ trống ngày hiệu lực. Kích hoạt ngay cần kiểm tra gói đang hoạt động.') }}
+      {% call controls('Ghi nhận thanh toán') %}
+        <div class="field-grid">
+          {{ field('amount', 'Số tiền (₫)', 'number', required=true, minimum=0, help='Số tiền không âm.') }}
+          {{ field('payment_method', 'Phương thức', required=true, options=[('CASH', 'Tiền mặt'), ('BANK_TRANSFER', 'Chuyển khoản')]) }}
+          {{ field('activation_mode', 'Chế độ', required=true, options=[('now', 'Kích hoạt ngay'), ('later', 'Thanh toán trước')], full=true) }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+  {% elif record.status == 'PENDING_ACTIVATION' %}
+    {% call panel('Kích hoạt gói đã thanh toán') %}
+      {{ pending('Gói đã có biên lai. Ngày bắt đầu và ngày hết hạn sẽ được xác định khi kích hoạt theo quy tắc đã chốt.') }}
+      <div>{{ locked('Kích hoạt gói') }}</div>
+    {% endcall %}
+  {% endif %}
+{% elif page == 'members' %}
+  {% call panel('Tìm hội viên') %}
+    <div class="field"><label class="form-label" for="member-search">Tên, số điện thoại hoặc email mẫu</label>
+      <input class="form-control" id="member-search" type="search" maxlength="100" autocomplete="off" aria-describedby="search-helper"></div>
+    <p class="preview-helper" id="search-helper">Bộ lọc chỉ tìm trong danh sách minh họa trên trang.</p>
+    <div class="inline-actions">{{ locked('Tra cứu CCCD') }}{{ pending('Quyền tra cứu CCCD đang chờ xác nhận.') }}</div>
+    {% call table('Hội viên minh họa', ['Mã hội viên', 'Họ và tên', 'Điện thoại mẫu', 'Email mẫu', 'Trạng thái gói']) %}
+      {% for item in data.people %}
+      <tr data-search-row data-search-text="{{ item.name }} {{ item.phone }} {{ item.email }}"><td>{{ item.id }}</td><td><strong>{{ item.name }}</strong></td><td>{{ item.phone }}</td>
+        <td>{{ item.email }}</td><td>{{ badge(item.status) }}</td></tr>
+      {% endfor %}
+      <tr id="member-search-empty" hidden><td colspan="5" class="empty-row">Không có hội viên minh họa phù hợp.</td></tr>
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'registration' %}
+  {% call panel('Hồ sơ và tài khoản hội viên') %}
+    {{ pending('Biểu mẫu đăng ký tại quầy dùng cùng trường dữ liệu với trang đăng ký hội viên.') }}
+    {% call controls('Tạo hội viên') %}
+      {% include 'registration_fields.html' %}
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'usage' %}
+  {% call panel('Lượt sử dụng dịch vụ lẻ') %}
+    {{ pending('Ghi lượt cần xác định đúng chu kỳ gói và kiểm tra quota. Màn hình này chỉ minh họa các trường nhập.') }}
+    {% call controls('Ghi lượt sử dụng') %}
+      <div class="field-grid">
+        {{ field('usage_member', 'Hội viên', required=true, options=[('HV-01', 'Hội viên Mẫu 01')]) }}
+        {{ field('usage_membership', 'Chu kỳ gói', required=true, options=[('IP-104', 'IP-104 · Strength Plus')]) }}
+        {{ field('usage_service', 'Dịch vụ', required=true, options=[('gym', 'Tập tự do')]) }}
+        {{ field('usage_time', 'Thời điểm sử dụng', 'datetime-local') }}
+      </div>
+      {{ facts([('Buổi tập liên kết', '— (dịch vụ lẻ)'), ('Trạng thái dự kiến', 'USED')]) }}
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'rooms' %}
+  {% call panel('Danh sách phòng tập') %}
+    {% call table('Tình trạng phòng', ['Phòng', 'Loại phòng', 'Trạng thái', 'Thao tác']) %}
+      {% for name, kind, status in data.rooms %}
+      <tr><td><strong>{{ name }}</strong></td><td>{{ kind }}</td><td>{{ badge(status) }}</td>
+        <td>{{ locked('Đặt về Khả dụng' if status == 'MAINTENANCE' else 'Đưa vào bảo trì') }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    {{ pending('Phòng đang bảo trì không nhận lịch mới. Cách xử lý lịch đã xếp đang chờ xác nhận.') }}
+  {% endcall %}
+{% elif page == 'equipment' %}
+  {% call panel('Danh sách thiết bị') %}
+    {% call table('Thiết bị', ['Mã', 'Thiết bị', 'Số serial', 'Vị trí', 'Trạng thái']) %}
+      {% for code, name, serial, room, status in data.equipment %}
+      <tr><td>{{ code }}</td><td><strong>{{ name }}</strong></td><td>{{ serial }}</td>
+        <td>{{ room or 'Lưu kho' }}</td><td>{{ badge(status) }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    <div>{{ link('Xem phiếu bảo trì', role, 'maintenance') }}</div>
+  {% endcall %}
+  <div class="panel-grid">
+    {% call panel('Điều chuyển thiết bị') %}
+      {{ pending('Có thể chọn phòng hoặc lưu kho trong biểu mẫu dự kiến.') }}
+      {% call controls('Lưu vị trí') %}
+        {{ field('move_equipment', 'Thiết bị', required=true, options=[('EQ-01', 'Máy chạy bộ'), ('EQ-02', 'Giá đỡ squat'), ('EQ-03', 'Xe đạp tập')]) }}
+        {{ field('move_room', 'Vị trí đến', required=true, options=[('warehouse', 'Lưu kho'), ('studio-a', 'Studio A'), ('pt', 'Khu PT')]) }}
+      {% endcall %}
+    {% endcall %}
+    {% call panel('Đổi tình trạng thiết bị') %}
+      {{ pending('Phạm vi chuyển trạng thái trực tiếp và chuyển qua phiếu bảo trì đang chờ xác nhận.') }}
+      {% call controls('Lưu trạng thái') %}
+        {{ field('state_equipment', 'Thiết bị', required=true, options=[('EQ-01', 'Máy chạy bộ'), ('EQ-02', 'Giá đỡ squat'), ('EQ-03', 'Xe đạp tập')]) }}
+        {{ field('equipment_status', 'Trạng thái mới', required=true, options=[('ACTIVE', 'Đang hoạt động'), ('MAINTENANCE', 'Bảo trì'), ('RETIRED', 'Ngừng sử dụng')]) }}
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% elif page == 'maintenance' %}
+  {% call panel('Lịch sử bảo trì') %}
+    {% call table('Phiếu bảo trì', ['Mã phiếu', 'Thiết bị', 'Bắt đầu', 'Kết thúc', 'Chi phí', 'Mô tả', 'Tình trạng']) %}
+      {% for code, device, start, end, cost, description in data.maintenance %}
+      <tr><td>{{ code }}</td><td>{{ device }}</td><td>{{ start }}</td><td>{{ end or '—' }}</td>
+        <td>{{ money(cost) }}</td><td>{{ description }}</td><td>{{ badge('Hoàn tất' if end else 'Đang mở') }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    {{ pending('Mở hoặc đóng phiếu cần đồng bộ với trạng thái thiết bị. Cách ghi chi phí khi phiếu còn mở đang chờ quyết định.') }}
+  {% endcall %}
+  <div class="panel-grid">
+    {% call panel('Mở phiếu bảo trì') %}
+      {% call controls('Mở phiếu') %}
+        <div class="field-grid">
+          {{ field('maintenance_equipment', 'Thiết bị', required=true, options=[('EQ-01', 'Máy chạy bộ'), ('EQ-02', 'Giá đỡ squat')]) }}
+          {{ field('maintenance_start', 'Ngày bắt đầu', 'date', required=true) }}
+          {{ field('maintenance_description', 'Mô tả sự cố', 'textarea', maxlength=500, full=true) }}
+        </div>
+        {{ facts([('Kết thúc', '—'), ('Chi phí', '—'), ('Thiết bị sau khi mở phiếu', badge('MAINTENANCE'))]) }}
+      {% endcall %}
+    {% endcall %}
+    {% call panel('Hoàn tất phiếu bảo trì') %}
+      {% call controls('Đóng phiếu') %}
+        <div class="field-grid">
+          {{ field('maintenance_record', 'Phiếu đang mở', required=true, options=[('BT-01', 'BT-01 · Máy chạy bộ')]) }}
+          {{ field('maintenance_end', 'Ngày kết thúc', 'date', required=true, help='Bằng hoặc sau ngày bắt đầu.') }}
+          {{ field('maintenance_cost', 'Chi phí (₫)', 'number', required=true, minimum=0) }}
+          {{ field('maintenance_target', 'Trạng thái thiết bị', required=true, options=[('ACTIVE', 'Đang hoạt động'), ('RETIRED', 'Ngừng sử dụng')]) }}
+          {{ field('maintenance_result', 'Mô tả hoàn tất', 'textarea', maxlength=500, full=true) }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% endif %}
+{% endblock %}

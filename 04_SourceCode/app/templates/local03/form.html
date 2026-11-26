@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% from 'components.html' import field %}
+{% block title %}{{ 'Tạo lớp nhóm' if manager else 'Đặt lịch PT' }}{% endblock %}
+{% block content %}
+<section class="surface surface-wide">
+  <div class="surface-header"><h1>{{ 'Tạo lớp nhóm' if manager else 'Đặt lịch PT' }}</h1></div>
+  <div class="form-fields">
+    {% if error %}<p class="alert alert-danger" role="alert">{{ error }}</p>{% endif %}
+    {% if not manager %}<p class="notice">Lịch PT đã xác nhận không thể hủy. Vui lòng kiểm tra thời gian trước khi đặt.</p>{% endif %}
+    {% if trainers and rooms %}
+      <form method="get" class="d-flex flex-wrap gap-2 align-items-end">
+        {{ field('trainer', 'Tra lịch huấn luyện viên', required=true, options=trainer_options, value=inspected) }}
+        <button class="btn btn-outline-secondary" type="submit">Xem khung giờ đã có lịch</button>
+      </form>
+      {% if inspected %}
+        <ul>{% for start, end, room_name in busy %}<li>{{ start.strftime('%d/%m/%Y %H:%M') }} – {{ end.strftime('%d/%m/%Y %H:%M') }} · {{ room_name }}</li>
+        {% else %}<li>Không có buổi sắp tới của HLV này.</li>{% endfor %}</ul>
+      {% endif %}
+      <form method="post" data-single-submit{% if not manager %} data-confirm="Xác nhận đặt PT và dùng một lượt? Theo quy định, lịch PT đã đặt không hủy được."{% endif %}>
+        <input type="hidden" name="csrf_token" value="{{ token }}">
+        <div class="field-grid">
+          <div class="field">
+            <label class="form-label" for="selected-trainer">Huấn luyện viên</label>
+            <select class="form-select" id="selected-trainer" name="trainer" required>
+              <option value="">Chọn HLV</option>
+              {% for id, name, gender, state, certificate in trainers %}
+                <option value="{{ id }}"{% if form.get('trainer') == id|string %} selected{% endif %}>{{ name }} · {{ {'MALE':'Nam','FEMALE':'Nữ','OTHER':'Khác'}[gender] }}{% if certificate %} · {{ certificate }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {{ field('room', 'Phòng', required=true, options=rooms, value=form.get('room', '0')|int) }}
+          {{ field('start', 'Bắt đầu', 'datetime-local', required=true, value=form.get('start')) }}
+          {{ field('end', 'Kết thúc', 'datetime-local', required=true, value=form.get('end')) }}
+          {% if manager %}
+            {{ field('name', 'Tên lớp', required=true, maxlength=100, value=form.get('name')) }}
+            {{ field('category', 'Thể loại', required=true, maxlength=50, value=form.get('category')) }}
+            {{ field('capacity', 'Sức chứa', 'number', required=true, minimum=1, value=form.get('capacity')) }}
+          {% else %}
+            {{ field('focus', 'Mục tiêu tập', 'textarea', required=true, maxlength=200, full=true, value=form.get('focus')) }}
+          {% endif %}
+        </div>
+        <p class="field-help">Ngày giờ theo giờ Việt Nam.</p>
+        <button class="btn action-button" type="submit">{{ 'Tạo lớp' if manager else 'Đặt lịch PT' }}</button>
+      </form>
+    {% else %}<p>Chưa có huấn luyện viên hoặc phòng khả dụng.</p>{% endif %}
+    <p><a class="btn btn-outline-secondary" href="{{ url_for('pages.management_schedule' if manager else 'pages.member_schedule') }}">Về lịch tập</a></p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'brand.html' import brand %}
+{% block shell_class %}{% if public_auth %} auth-shell{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block sidebar %}{% if not public_auth %}{{ super() }}{% endif %}{% endblock %}
+{% block header %}{% if not public_auth %}{{ super() }}{% endif %}{% endblock %}
+{% block main_class %}{% if public_auth %}auth-stage{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block content %}
+{% if public_auth %}
+<div class="auth-layout{% block auth_variant %}{% endblock %}">
+  <aside class="auth-visual" aria-label="IronPulse">
+    {{ brand(url_for('pages.home'), 'brand auth-brand auth-brand-dark') }}
+    <img class="auth-lift" src="{{ url_for('static', filename='ironpulse-lift.svg') }}" alt="" width="552" height="390">
+    <div class="auth-message">{% block auth_message %}{% endblock %}</div>
+  </aside>
+  <section class="auth-panel" aria-labelledby="page-title">
+    {{ brand(url_for('pages.home'), 'brand auth-brand auth-brand-compact') }}
+    {% block form_content %}{% endblock %}
+  </section>
+</div>
+{% else %}<section class="surface surface-wide" aria-labelledby="page-title">{{ self.form_content() }}</section>{% endif %}
+{% endblock %}

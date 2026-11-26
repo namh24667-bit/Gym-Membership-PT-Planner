@@ -1,0 +1,30 @@
+{% from 'components.html' import action_link %}
+{% from 'local04/ui.html' import badge %}
+
+{% macro class_status(item, class_states) %}
+{{ badge(class_states[item.class_state][0], class_states[item.class_state][1]) }}
+{% endmacro %}
+
+{% macro booking_form(item, token, week) %}
+<form method="post" action="{{ url_for('pages.group_action', session_id=item.id, week=week) }}" data-single-submit>
+  <input type="hidden" name="csrf_token" value="{{ token }}">
+  <input type="hidden" name="last_booking" value="{{ item.last_booking }}">
+  <button class="btn action-button" type="submit">{{ 'Đặt lại' if item.booking_status == 'CANCEL' else 'Đăng ký lớp' }}</button>
+</form>
+{% endmacro %}
+
+{% macro eligibility(item, reasons, token, week) %}
+{% set message, link = reasons[item.reason] %}
+<div class="class-eligibility" data-eligibility="{{ item.reason }}">
+  <p{% if item.reason == 'eligible' %} class="eligible-message"{% endif %}>{{ message }}</p>
+  {% if item.reason == 'eligible' or item.reason == 'quota' %}
+    {% if item.quota_remaining == -1 %}<small>Quota lớp nhóm không giới hạn.</small>
+    {% elif item.quota_remaining is not none %}<small>Còn {{ item.quota_remaining }} lượt lớp nhóm.</small>{% endif %}
+  {% endif %}
+  {% if item.may_book %}{{ booking_form(item, token, week) }}
+  {% elif link == 'catalog' %}{{ action_link(url_for('pages.catalog', benefit='group'), 'Xem gói có lớp nhóm') }}
+  {% elif link == 'membership' %}{{ action_link(url_for('pages.member_area'), 'Xem gói tập của tôi') }}
+  {% elif link == 'schedule' %}{{ action_link(url_for('pages.member_schedule'), 'Xem lịch đã đặt') }}
+  {% endif %}
+</div>
+{% endmacro %}

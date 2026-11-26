@@ -1,0 +1,38 @@
+{% from 'components.html' import icon %}
+{% from 'brand.html' import brand %}
+{% set selected = {
+  'pages.admin_class':'pages.management_schedule', 'pages.new_group_class':'pages.management_schedule',
+  'pages.dashboard':'pages.management_area', 'pages.staff_contract':'pages.admin_contracts',
+  'pages.staff_payment':'pages.admin_contracts', 'pages.staff_activate':'pages.admin_contracts',
+  'pages.admin_receipt':'pages.admin_payments', 'pages.member_profile':'pages.member_directory',
+  'pages.staff_register':'pages.member_directory', 'pages.asset_detail':'pages.asset_directory',
+  'pages.personnel_create':'pages.personnel_list', 'pages.personnel_assign':'pages.personnel_list',
+  'pages.personnel_detail':'pages.personnel_list', 'pages.trainer_cert_admin':'pages.personnel_list',
+  'pages.staff_trainer':'pages.staff_trainers', 'pages.staff_class':'pages.staff_classes',
+  'pages.admin_plan':'pages.admin_catalog', 'pages.admin_plan_detail':'pages.admin_catalog',
+  'pages.membership_detail':'pages.member_area', 'pages.plan_detail':'pages.catalog',
+  'pages.member_pt_detail':'pages.member_schedule', 'pages.member_class_detail':'pages.member_classes',
+  'pages.group_action':'pages.member_classes', 'pages.cancel_group':'pages.member_schedule', 'pages.trainer_schedule_detail':'pages.trainer_schedule'
+}.get(request.endpoint, request.endpoint) %}
+<aside class="sidebar" aria-label="Điều hướng IronPulse">
+  {{ brand(url_for('pages.home')) }}
+  <button class="btn menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar-links" hidden>
+    {{ icon('menu') }} Điều hướng
+  </button>
+  <button class="btn desktop-toggle" type="button" aria-label="Thu gọn điều hướng" aria-expanded="true" aria-controls="sidebar-links" hidden>{{ icon('collapse') }} <span>Thu gọn</span></button>
+  <div class="sidebar-links" id="sidebar-links">
+    <nav class="side-nav" aria-label="Điều hướng chính">
+      {% for section, items in navigation_sections %}
+      <div class="nav-section">
+        {% if section %}<p class="nav-label">{{ section }}</p>{% endif %}
+        {% for label, endpoint, symbol in items %}
+          <a href="{{ url_for(endpoint) }}" title="{{ label }}" aria-label="{{ label }}"{% if selected == endpoint %} aria-current="page"{% endif %}>{{ icon(symbol) }}<span>{{ label }}</span></a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      {% if preview_available and not identity %}
+        <a href="{{ url_for('preview.screen', role='member') }}">{{ icon('info') }}<span>Xem trước giao diện</span></a>
+      {% endif %}
+    </nav>
+  </div>
+</aside>

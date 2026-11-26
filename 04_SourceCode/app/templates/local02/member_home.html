@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% from 'local02/format.html' import day, quota %}
+{% from 'local04/ui.html' import badge, contract_badge, empty, table %}
+{% from 'local03/time.html' import interval %}
+{% block title %}Gói tập của tôi{% endblock %}
+{% block content %}
+<section class="surface surface-admin" aria-labelledby="page-title">
+  <header class="surface-header page-heading">
+    <h1 id="page-title">Gói tập của tôi</h1>
+    <div class="page-actions">
+      {% if local03_enabled() and current %}
+        <a class="btn action-button" href="{{ url_for('pages.schedule_form') }}">Đặt lịch PT</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_classes') }}">Đăng ký lớp nhóm</a>
+      {% endif %}
+      <a class="btn {{ 'btn-outline-secondary' if current else 'action-button' }}" href="{{ url_for('pages.catalog') }}">Xem danh mục gói</a>
+    </div>
+  </header>
+  <div class="form-fields">
+    <div class="portal-grid">
+    {% if current %}
+    <section class="member-summary">
+      {{ badge('Đang hiệu lực', 'ACTIVE') }}
+      <h2>{{ current.plan }}</h2>
+      <p>Hiệu lực từ {{ day(current.start) }} đến {{ day(current.end) }}</p>
+      <p><strong>{{ days_left ~ ' ngày còn lại' if days_left else 'Hết hạn hôm nay' }}</strong></p>
+      <div class="page-actions"><a class="btn action-button" href="{{ url_for('pages.membership_detail', record_id=current.id) }}">Quyền lợi và biên lai</a></div>
+    </section>
+    {% else %}
+    <p class="empty-panel">Bạn chưa có gói đang hiệu lực. Mở danh mục để xem gói có thể đăng ký.</p>
+    {% endif %}
+    {% if local03_enabled() %}
+    <section class="workspace-panel">
+      <div class="panel-heading"><h2>Lịch sắp tới</h2><a class="btn btn-outline-secondary" href="{{ url_for('pages.member_schedule') }}">Lịch đã đặt</a></div>
+      <ul class="record-list">
+      {% for begins, ends, name, coach, room, sid in upcoming %}
+      <li>{% if sid %}<a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.member_pt_detail', record_id=sid) }}">{{ name }}</a>{% else %}<strong>{{ name }}</strong>{% endif %}
+        <br><small>{{ interval(begins, ends) }}{% if coach %} · {{ coach }} · {{ room }}{% endif %}</small></li>
+      {% else %}<li>Bạn chưa có buổi tập sắp tới.</li>{% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+    </div>
+    {% if benefits %}<dl class="admin-metrics mb-0" aria-label="Quyền lợi còn lại">
+      {% for service, limit, used, available in benefits %}
+      <div><dt>{{ service }}</dt><dd>{{ quota(-1) if limit == -1 else [0, limit-used]|max ~ ' lượt còn lại' }}</dd></div>
+      {% endfor %}
+    </dl>{% endif %}
+    <section class="admin-section">
+      <h2>Lịch sử hợp đồng</h2>
+      {% call table('Hợp đồng của tôi', ['Gói tập', 'Trạng thái', 'Ngày bắt đầu', 'Ngày hết hạn', 'Hợp đồng']) %}
+        {% for item in contracts %}<tr>
+          <td>{{ item.plan }}</td>
+          <td>{{ contract_badge(item.status, item.start, ui_today, membership_status) }}</td>
+          <td>{{ day(item.start) }}</td><td>{{ day(item.end) }}</td>
+          <td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.membership_detail', record_id=item.id) }}">Xem hợp đồng #{{ item.id }}</a></td>
+        </tr>{% else %}{{ empty(5, 'Bạn chưa có hợp đồng.') }}{% endfor %}
+      {% endcall %}
+    </section>
+  </div>
+</section>
+{% endblock %}

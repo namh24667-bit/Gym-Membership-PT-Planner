@@ -1,0 +1,124 @@
+{% extends 'local04/layout.html' %}
+{% from 'local04/ui.html' import dates, table, empty %}
+{% from 'local02/format.html' import day, money %}
+{% from 'local03/time.html' import interval, moment %}
+{% from 'components.html' import icon %}
+{% block heading %}{{ 'Báo cáo vận hành và tài chính' if reports else 'Tổng quan quản lý' }}{% endblock %}
+{% block intro %}<p>{{ day(start) }} – {{ day(end) }}</p>{% endblock %}
+{% block heading_actions %}{% if not reports %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_reports', **{'from':start, 'to':end}) }}">Mở báo cáo chi tiết</a>{% endif %}{% endblock %}
+{% block screen %}
+<form method="get" class="filter-bar -compact">
+  {{ dates(start, end, true) }}
+  <button class="btn btn-outline-secondary" type="submit">Áp dụng kỳ báo cáo</button>
+</form>
+{% if not reports %}
+<dl class="kpi-grid" aria-label="Chỉ số vận hành">
+  <div class="kpi-card is-highlight"><dt>{{ icon('chart', 18) }} Thực thu trong kỳ</dt><dd data-metric="revenue" data-amount="{{ values['receipts',''][1] }}">{{ money(values['receipts',''][1]) }}</dd></div>
+  {% for key, label, symbol in [('members_all','Tổng số hội viên','people'),('members_active','Hội viên có gói hiệu lực','person'),
+   ('plans_active','Gói đang hiệu lực','card'),('pt','Lịch PT trong kỳ','pulse'),('classes','Lớp nhóm trong kỳ','calendar')] %}
+  <div class="kpi-card"><dt>{{ icon(symbol, 18) }} {{ label }}</dt><dd data-metric="{{ key }}">{{ count[key, ''] }}</dd></div>
+  {% endfor %}
+</dl>
+{% endif %}
+<div class="dash-grid">
+  <section class="workspace-panel">
+    <div class="panel-heading"><h2>Thực thu theo tháng</h2><span class="field-help">Đơn vị ₫</span></div>
+    {% if receipts_by_month %}
+    {% set scale = namespace(maximum=0) %}
+    {% for month in receipts_by_month %}{% set scale.maximum = [scale.maximum, values['receipt_month',month][1]]|max %}{% endfor %}
+    <dl class="chart-list">
+    {% for month in receipts_by_month %}{% set total = values['receipt_month',month][1] %}
+      <div class="chart-row"><dt><span>{{ month[5:] }}/{{ month[:4] }}</span><span>{{ money(total) }}</span></dt>
+       <dd><span class="chart-bar" aria-hidden="true" style="--bar: {{ '%.2f'|format(100*total/scale.maximum if scale.maximum else 0) }}%"></span></dd></div>
+    {% endfor %}
+    </dl>
+    {% else %}<p class="empty-panel mb-0">Chưa có biên lai hợp lệ trong kỳ.</p>{% endif %}
+  </section>
+  {% if not reports %}
+  <section class="workspace-panel">
+    <div class="panel-heading"><h2>Lịch sắp tới</h2><a class="btn btn-outline-secondary" href="{{ url_for('pages.management_schedule') }}">Xem lịch</a></div>
+    <ul class="record-list">
+    {% for sid, kind, begins, ends, room, coach, name, member, booked, cap in upcoming %}
+      <li><strong>{{ name or 'PT cá nhân' }}</strong><br><small>{{ interval(begins, ends) }} · {{ room }} · {{ coach }}</small></li>
+    {% else %}<li>Chưa có lịch sắp tới.</li>{% endfor %}
+    </ul>
+  </section>
+  {% else %}
+  <section class="workspace-panel">
+    <div class="panel-heading"><h2>Theo phương thức</h2></div>
+    <dl class="record-details mb-0">
+    {% for method, label in payment_method.items() %}
+      <dt>{{ label }}</dt><dd>{{ money(values.get(('receipt_method',method),(0,0))[1]) }}</dd>
+    {% endfor %}
+    </dl>
+  </section>
+  {% endif %}
+</div>
+{% if not reports %}
+<section class="workspace-panel">
+  <div class="panel-heading"><h2>Giao dịch gần đây trong kỳ</h2><a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_payments', **{'from':start, 'to':end}) }}">Tất cả giao dịch</a></div>
+  {% call table('Giao dịch gần đây', ['Biên lai', 'Hội viên', 'Thời gian', 'Thực thu']) %}
+  {% for item in recent_receipts %}<tr><td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.admin_receipt', contract_id=item.membership_id) }}">Xem biên lai #{{ item.payment_id }}</a></td><td>{{ item.full_name }}</td><td>{{ moment(item.payment_time) }}</td><td>{{ money(item.amount) }}</td></tr>
+  {% else %}{{ empty(4, 'Chưa có giao dịch trong kỳ.') }}{% endfor %}
+  {% endcall %}
+</section>
+{% endif %}
+<section>
+  <h2 class="h5">Hội viên và hiệu lực gói</h2>
+  <p>Hiệu lực được tính tại ngày {{ day(today) }}. Hội viên mới được tính theo ngày tham gia trong kỳ.</p>
+  <dl class="admin-metrics">
+    {% for key, label in ([('members_all','Tổng số hội viên'),('members_active','Hội viên có gói hiệu lực'),('plans_active','Gói đang hiệu lực')] if reports else []) +
+      [('members_new','Hội viên mới trong kỳ'),('members_expired','Hội viên hết gói'),('plans_expired','Gói đã quá hạn')] %}
+      <div><dt>{{ label }}</dt><dd data-metric="{{ key }}">{{ count[key, ''] }}</dd></div>
+    {% endfor %}
+  </dl>
+</section>
+<section class="admin-section">
+  <h2>Hợp đồng và thực thu</h2>
+  <p>Hợp đồng tính theo ngày lập. Thực thu tính theo ngày ghi nhận biên lai hợp lệ.</p>
+  <dl class="admin-metrics">
+    <div><dt>Hợp đồng lập trong kỳ</dt><dd data-metric="contracts">{{ count['contracts',''] }}</dd></div>
+    <div><dt>Giá trị đã chốt của hợp đồng trong kỳ</dt><dd>{{ money(values['contracts',''][1]) }}</dd></div>
+    <div><dt>Giao dịch trong kỳ</dt><dd data-metric="receipts">{{ count['receipts',''] }}</dd></div>
+    {% if reports %}<div><dt>Thực thu trong kỳ</dt><dd data-metric="revenue" data-amount="{{ values['receipts',''][1] }}">{{ money(values['receipts',''][1]) }}</dd></div>{% endif %}
+  </dl>
+  {% call table('Hợp đồng theo trạng thái hiện tại', ['Trạng thái hiện tại', 'Hợp đồng', 'Giá trị đã chốt']) %}
+  {% for status, label in membership_status.items() %}{% set row = values.get(('contract_status',status),(0,0)) %}
+    <tr><td>{{ label }}</td><td>{{ row[0] }}</td><td>{{ money(row[1]) }}</td></tr>
+  {% endfor %}{% endcall %}
+  {% if reports %}
+    {% call table('Thực thu theo phương thức', ['Phương thức', 'Giao dịch', 'Thực thu']) %}
+    {% for method, label in payment_method.items() %}{% set row = values.get(('receipt_method',method),(0,0)) %}
+      <tr><td>{{ label }}</td><td>{{ row[0] }}</td><td>{{ money(row[1]) }}</td></tr>
+    {% endfor %}{% endcall %}
+    {% call table('Thực thu theo tháng', ['Tháng', 'Giao dịch', 'Thực thu']) %}
+    {% for month in receipts_by_month %}{% set row = values['receipt_month',month] %}
+      <tr><td>{{ month[5:] }}/{{ month[:4] }}</td><td>{{ row[0] }}</td><td>{{ money(row[1]) }}</td></tr>
+    {% else %}{{ empty(3, 'Chưa có biên lai trong kỳ.') }}{% endfor %}{% endcall %}
+  {% endif %}
+  <div class="page-actions mt-3"><a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_contracts', **{'from':start, 'to':end}) }}">Đối chiếu hợp đồng</a>
+     <a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_payments', **{'from':start, 'to':end}) }}">Đối chiếu biên lai</a></div>
+</section>
+<section class="admin-section">
+  <h2>Lịch PT và lớp nhóm</h2>
+  <p>Lịch PT và lớp tính theo giờ bắt đầu. Đăng ký và hủy tính theo thời điểm thao tác.</p>
+  <dl class="admin-metrics">
+    {% if reports %}<div><dt>Lịch PT</dt><dd data-metric="pt">{{ count['pt',''] }}</dd></div>
+    <div><dt>Lớp nhóm</dt><dd data-metric="classes">{{ count['classes',''] }}</dd></div>{% endif %}
+    <div><dt>Đăng ký lớp</dt><dd data-metric="booked">{{ count['booked',''] }}</dd></div>
+    <div><dt>Lượt hủy lớp</dt><dd data-metric="cancelled">{{ count['cancelled',''] }}</dd></div>
+    <div><dt>Lấp đầy lớp</dt><dd>{{ '%.1f'|format(fill) ~ '%' if fill is not none else '—' }}</dd>
+      <small>{{ count['seats',''] }}/{{ values['classes',''][1]|int }} chỗ</small></div>
+  </dl>
+  <p><a class="btn btn-outline-secondary" href="{{ url_for('pages.management_schedule') }}">Quản lý lịch lớp và cập nhật gói hết hạn</a></p>
+</section>
+<section class="admin-section">
+  <h2>Thiết bị và bảo trì</h2>
+  <dl class="admin-metrics">
+    {% for state, label in asset_states.items() %}<div><dt>{{ label }}</dt><dd>{{ count.get(('equipment',state),0) }}</dd></div>{% endfor %}
+    <div><dt>Phiếu đang mở</dt><dd>{{ count['maintenance_open',''] }}</dd></div>
+    <div><dt>Chi phí phiếu hoàn tất trong kỳ</dt><dd>{{ money(values['maintenance_cost',''][1]) }}</dd></div>
+  </dl>
+  <p><a class="btn btn-outline-secondary" href="{{ url_for('pages.asset_directory') }}">Xem thiết bị và phiếu bảo trì</a></p>
+</section>
+{% endblock %}

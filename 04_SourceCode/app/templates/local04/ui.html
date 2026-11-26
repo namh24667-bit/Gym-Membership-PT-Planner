@@ -1,0 +1,40 @@
+{% from 'components.html' import field %}
+{% macro csrf(token) %}<input type="hidden" name="csrf_token" value="{{ token }}">{% endmacro %}
+{% macro buttons(previous, following) %}
+{% if previous or following %}<nav aria-label="Phân trang" class="pagination-actions">
+  {% if previous %}<a class="btn btn-outline-secondary" href="{{ previous }}">Trang trước</a>{% endif %}
+  {% if following %}<a class="btn btn-outline-secondary" href="{{ following }}">Trang tiếp theo</a>{% endif %}
+</nav>{% endif %}
+{% endmacro %}
+{% macro table(label, columns) %}
+<div class="table-responsive" role="region" aria-label="{{ label }}" tabindex="0"><table class="table align-middle">
+  <caption class="visually-hidden">{{ label }}</caption>
+  <thead><tr>{% for title in columns %}<th scope="col">{{ title }}</th>{% endfor %}</tr></thead>
+  <tbody>{{ caller() }}</tbody>
+</table></div>
+{% endmacro %}
+{% macro empty(columns, message='Chưa có dữ liệu phù hợp.') %}<tr><td colspan="{{ columns }}">{{ message }}</td></tr>{% endmacro %}
+{% macro badge(label, state) %}<span class="admin-status" data-state="{{ state }}">{{ label }}</span>{% endmacro %}
+{% macro contract_badge(state, start, today, labels) -%}
+  {% if state == 'ACTIVE' and start and start > today %}
+    {{ badge('Chưa đến ngày hiệu lực', 'UPCOMING') }}
+  {% elif state == 'PENDING_ACTIVATION' %}
+    {{ badge('Chưa kích hoạt', state) }}
+  {% else %}
+    {{ badge(labels[state], state) }}
+  {% endif %}
+{%- endmacro %}
+{% macro week_select(id) %}
+<div class="week-tools" hidden><label class="form-label m-0" for="{{ id }}">Hiển thị theo tuần</label>
+  <select class="form-select" id="{{ id }}"><option value="">Tất cả các tuần</option></select></div>
+{% endmacro %}
+{% macro dates(start, end, required=false) %}
+{{ field('from', 'Từ ngày', 'date', value=start, required=required) }}
+{{ field('to', 'Đến ngày', 'date', value=end, required=required) }}
+{% endmacro %}
+{% macro contact_fields(row=none) %}
+{{ field('full_name', 'Họ và tên', required=true, maxlength=100, value=row.full_name if row else none) }}
+{{ field('email', 'Email', 'email', required=true, maxlength=255, value=row.email if row else none) }}
+{{ field('phone', 'Điện thoại', 'tel', required=true, maxlength=15, value=row.phone if row else none) }}
+{{ field('address', 'Địa chỉ', maxlength=255, value=row.address if row else none) }}
+{% endmacro %}

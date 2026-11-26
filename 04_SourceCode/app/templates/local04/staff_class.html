@@ -1,0 +1,29 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import action_link %}
+{% from 'local04/staff_directory_ui.html' import class_status %}
+{% from 'local03/time.html' import interval %}
+{% block heading %}{{ item.name }}{% endblock %}
+{% block intro %}<p>{{ item.category }} · Lớp #{{ item.id }}</p>{% endblock %}
+{% block heading_actions %}{{ action_link(url_for('pages.staff_classes'), 'Về danh sách lớp') }}{% endblock %}
+{% block screen %}
+<div class="portal-grid">
+  <section class="workspace-panel">
+    <h2>Lịch và số chỗ</h2>
+    <dl class="record-details">
+      <dt>Trạng thái</dt><dd>{{ class_status(item.state, class_states) }}</dd>
+      <dt>Huấn luyện viên</dt><dd>{{ item.trainer }}</dd>
+      <dt>Phòng tập</dt><dd>{{ item.room }}</dd>
+      <dt>Khung giờ</dt><dd>{{ interval(item.start, item.end) }}</dd>
+      <dt>Sức chứa</dt><dd>{{ item.capacity }} học viên</dd>
+      <dt>Đã đăng ký</dt><dd>{{ item.enrolled }} học viên</dd>
+      <dt>Còn lại</dt><dd>{{ item.remaining }} chỗ</dd>
+    </dl>
+    <div class="page-actions mt-3">{{ action_link(url_for('pages.staff_trainer', trainer_id=item.trainer_id), 'Xem hồ sơ HLV') }}</div>
+  </section>
+  <section class="workspace-panel">
+    <h2>Điều kiện tham gia</h2>
+    <p>Hội viên cần gói có hiệu lực bao phủ buổi học, quyền lợi lớp nhóm và lượt còn lại. Hệ thống kiểm tra lại chỗ trống, lịch trùng và lượt đăng ký khi hội viên đặt lớp.</p>
+    <div class="page-actions">{{ action_link(url_for('pages.staff_plan_catalog', benefit='group'), 'Xem gói có lớp nhóm', primary=true) }}</div>
+  </section>
+</div>
+{% endblock %}

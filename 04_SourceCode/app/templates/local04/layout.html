@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{% block heading %}{% endblock %}{% endblock %}
+{% block content %}
+<section class="surface surface-admin" aria-labelledby="admin-title">
+  <header class="surface-header page-heading"><div><h1 id="admin-title">{{ self.heading() }}</h1>{% block intro %}{% endblock %}</div>
+    {% block heading_actions %}{% endblock %}
+  </header>
+  <div class="form-fields">{% block screen %}{% endblock %}</div>
+</section>
+{% endblock %}

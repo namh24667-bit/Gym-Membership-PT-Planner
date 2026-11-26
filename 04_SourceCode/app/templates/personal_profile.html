@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% from 'components.html' import icon %}
+{% from 'local02/format.html' import day, quota %}
+{% from 'local03/time.html' import interval %}
+{% from 'local04/ui.html' import badge %}
+{% block title %}Thông tin cá nhân{% endblock %}
+{% block content %}
+<section class="surface surface-admin personal-profile" aria-labelledby="profile-title">
+  <header class="surface-header page-heading">
+    <div><h1 id="profile-title">Thông tin cá nhân</h1></div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('pages.home') }}">Về trang chính</a>
+  </header>
+  <div class="form-fields">
+    <section class="profile-summary" aria-label="Tài khoản">
+      <div class="account-avatar profile-avatar" aria-hidden="true">{{ profile.full_name.split()|last|first|upper }}</div>
+      <div>
+        <h2>{{ profile.full_name }}</h2>
+        <p>Mã tài khoản #{{ profile.person_id }}</p>
+        <div class="page-actions">
+          {% for role in roles %}{{ badge(role_labels[role], '') }}{% endfor %}
+          {{ badge('Có quyền truy cập', 'ACTIVE') }}
+        </div>
+      </div>
+    </section>
+    <div class="profile-grid">
+      <section class="workspace-panel">
+        <div class="panel-heading"><h2>Thông tin liên hệ</h2>{{ badge('Chỉ xem', '') }}</div>
+        <dl class="record-details">
+          <dt>Email đăng nhập</dt><dd>{{ profile.email }}</dd>
+          <dt>Số điện thoại</dt><dd>{{ profile.phone or 'Chưa có' }}</dd>
+          <dt>Ngày sinh</dt><dd>{{ day(profile.date_of_birth) }}</dd>
+          <dt>Giới tính</dt><dd>{{ {'MALE':'Nam', 'FEMALE':'Nữ', 'OTHER':'Khác'}.get(profile.gender, '—') }}</dd>
+          <dt>Địa chỉ</dt><dd>{{ profile.address or 'Chưa có' }}</dd>
+        </dl>
+      </section>
+      {% if profile.join_date or profile.staff_hire or profile.trainer_hire %}
+      <section class="workspace-panel">
+        <div class="panel-heading"><h2>Thông tin theo vai trò</h2></div>
+        <dl class="record-details">
+          {% if profile.join_date %}
+          <dt>Mã hội viên</dt><dd>#{{ profile.person_id }}</dd>
+          <dt>Ngày tham gia</dt><dd>{{ day(profile.join_date) }}</dd>
+          {% endif %}
+          {% if profile.staff_hire %}
+          <dt>{{ 'Mã quản lý' if 'management' in roles else 'Mã nhân viên' }}</dt><dd>#{{ profile.person_id }}</dd>
+          <dt>Chức vụ</dt><dd>{{ profile.position }}</dd>
+          <dt>Ngày vào làm</dt><dd>{{ day(profile.staff_hire) }}</dd>
+          <dt>Trạng thái nhân viên</dt><dd>{{ badge(employment[profile.staff_status], profile.staff_status) }}</dd>
+          {% endif %}
+          {% if profile.trainer_hire %}
+          <dt>Mã huấn luyện viên</dt><dd>#{{ profile.person_id }}</dd>
+          <dt>Ngày vào làm HLV</dt><dd>{{ day(profile.trainer_hire) }}</dd>
+          <dt>Trạng thái HLV</dt><dd>{{ badge(employment[profile.trainer_status], profile.trainer_status) }}</dd>
+          {% endif %}
+        </dl>
+      </section>
+      {% endif %}
+    </div>
+    {% if member %}
+    <div class="profile-grid">
+      <section class="workspace-panel">
+        <div class="panel-heading"><h2>Gói tập và quyền lợi</h2></div>
+        {% if profile.membership_id %}
+        <p><strong>{{ profile.plan_name }}</strong><br>{{ day(profile.start_date) }} – {{ day(profile.end_date) }}</p>
+        {% if benefits %}
+        <ul class="record-list">
+          {% for name, limit, used, available in benefits %}
+          <li>{{ name }} · {{ ([0, limit - used]|max ~ ' lượt còn lại' if limit != -1 else quota(limit)) if available else 'Chưa có hiệu lực' }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% else %}<p>Bạn chưa có gói tập đang có hiệu lực.</p>{% endif %}
+        {% if contracts_available %}
+        <div class="page-actions mt-3">
+          {% if profile.membership_id %}<a class="btn action-button" href="{{ url_for('pages.membership_detail', record_id=profile.membership_id) }}">Hợp đồng và biên lai</a>{% endif %}
+          <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_area') }}">Các gói của tôi</a>
+        </div>
+        {% endif %}
+      </section>
+      {% if local03_enabled() %}
+      <section class="workspace-panel">
+        <div class="panel-heading"><h2>Lịch tập sắp tới</h2></div>
+        <ul class="record-list">
+          {% for starts, ends, name, coach, room, sid in upcoming %}
+          <li><strong>{{ name }}</strong><br><small>{{ interval(starts, ends) }}{% if coach %} · {{ coach }} · {{ room }}{% endif %}</small></li>
+          {% else %}<li>Bạn chưa có buổi tập sắp tới.</li>{% endfor %}
+        </ul>
+        <div class="page-actions mt-3">
+          <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_schedule') }}">Lịch PT và lớp đã đặt</a>
+          <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_classes') }}">Lớp nhóm</a>
+        </div>
+      </section>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if trainer %}
+    <section class="workspace-panel">
+      <div class="panel-heading"><h2>Chứng chỉ và lịch phụ trách</h2></div>
+      {% if certificates_available %}<ul class="record-list">
+      {% for certificate in certificates %}<li>{{ certificate }}</li>{% else %}<li>Chưa có chứng chỉ được ghi nhận.</li>{% endfor %}
+      </ul>{% endif %}
+      {% if local03_enabled() %}
+      <h3 class="h6 mt-3">Các buổi phụ trách sắp tới</h3>
+      <ul class="record-list">
+        {% for sid, kind, starts, ends, room, name, _, _, _, _, _, _ in assigned %}
+        <li><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.trainer_schedule_detail', record_id=sid) }}">{{ name or 'PT cá nhân' }}</a><br><small>{{ interval(starts, ends) }} · {{ room }}</small></li>
+        {% else %}<li>Chưa có lịch được phân công sắp tới.</li>{% endfor %}
+      </ul>
+      <div class="page-actions mt-3"><a class="btn action-button" href="{{ url_for('pages.trainer_schedule') }}">Lịch PT và lớp phụ trách</a></div>
+      {% endif %}
+    </section>
+    {% endif %}
+    <p class="field-help mb-0">Trang này chỉ xem. Tự chỉnh sửa thông tin và đổi mật khẩu chưa được hỗ trợ.</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'preview/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'preview/ui.html' import badge, link, locked, pending, panel, table, metrics, controls, facts, occupancy, filters, empty_row %}
+{% block intro %}
+{% if page == 'overview' %}<p>Theo dõi lịch PT và lớp nhóm được phân công.</p>
+{% elif page == 'schedule' %}<p>Các buổi được sắp xếp theo thời gian bắt đầu.</p>
+{% endif %}
+{% endblock %}
+{% block screen %}
+{% set trainer_name, gender, trainer_status, certificates = data.trainers[0] %}
+{% if page in ('overview', 'schedule') %}
+  {% if page == 'overview' %}
+  <section class="preview-hero">
+    <h2>{{ trainer_name }}</h2>
+    <p>Lịch giảng dạy và hồ sơ chuyên môn.</p>
+    {{ link('Xem lịch dạy', role, 'schedule') }}
+  </section>
+  {{ metrics([('Buổi PT', data.pt_sessions|length, 'pulse'), ('Lớp nhóm', data.classes|length, 'calendar'),
+              ('Chứng chỉ', certificates|length, 'award')]) }}
+  {% endif %}
+  {% call panel('Thông tin hợp đồng') %}
+    {{ facts([('Huấn luyện viên', trainer_name), ('Ngày bắt đầu làm việc', data.trainer_hire_date),
+              ('Tình trạng', badge(trainer_status))]) }}
+    {% if trainer_status != 'ACTIVE' %}<p class="preview-helper">Chỉ HLV đang hoạt động được phân công lịch dạy mới.</p>{% endif %}
+  {% endcall %}
+  {% call panel('Buổi giảng dạy') %}
+    {% if page == 'schedule' %}
+      {{ filters(role, page, 'type', [('', 'Tất cả'), ('PERSONAL', 'PT'), ('GROUP', 'Lớp nhóm')], session_kind, 'Lọc loại buổi') }}
+    {% endif %}
+    {% call table('Lịch giảng dạy', ['Buổi tập', 'Khung giờ', 'Phòng / loại phòng', 'Loại buổi', 'Chi tiết']) %}
+      {% for kind, key, item in trainer_schedule if not session_kind or kind == session_kind %}
+      <tr><td><strong>{{ item.name }}</strong></td><td>{{ item.date }}<br>{{ item.time }}</td>
+        <td>{{ item.room }} · {{ item.room_type }}</td><td>{{ badge(kind) }}</td>
+        <td>{{ link('Xem ' ~ item.name, role, 'pt-detail' if kind == 'PERSONAL' else 'class-detail', key) }}</td></tr>
+      {% else %}{{ empty_row(5) }}{% endfor %}
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'pt-detail' %}
+  <div class="panel-grid">
+    {% call panel(record.name) %}
+      {{ facts([('Khung giờ', record.date ~ ' · ' ~ record.time), ('Phòng', record.room), ('Loại buổi', badge('PERSONAL')),
+                ('Hội viên', record.member), ('Điện thoại', 'Ẩn'), ('Liên hệ khẩn cấp', 'Ẩn'), ('Ghi chú sức khỏe', 'Ẩn')]) }}
+      <p class="preview-helper">Thông tin liên hệ và sức khỏe đang chờ xác định quyền hiển thị.</p>
+    {% endcall %}
+    {% call panel('Mục tiêu buổi tập') %}
+      <p>{{ record.focus }}</p>
+      {{ pending() }}
+      {% call controls('Cập nhật mục tiêu') %}
+        {{ field('focus', 'Mục tiêu buổi tập', 'textarea', required=true, maxlength=200, value=record.focus) }}
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% elif page == 'class-detail' %}
+  {% call panel(record.name) %}
+    {{ facts([('Thể loại', record.category), ('Khung giờ', record.date ~ ' · ' ~ record.time),
+              ('Phòng', record.room), ('Sĩ số', occupancy(record))]) }}
+  {% endcall %}
+  {% call panel('Hội viên đã đặt chỗ') %}
+    {% call table('Danh sách đặt chỗ thành công', ['Hội viên', 'Trạng thái', 'Điện thoại', 'Ghi chú sức khỏe']) %}
+      {% for name in record.attendees %}<tr><td>{{ name }}</td><td>{{ badge('SUCCESS') }}</td><td>Ẩn</td><td>Ẩn</td></tr>{% endfor %}
+    {% endcall %}
+    <p class="preview-helper">Thông tin liên hệ và sức khỏe đang chờ xác định quyền hiển thị.</p>
+  {% endcall %}
+{% elif page == 'certificates' %}
+  {% call panel('Chứng chỉ của ' ~ trainer_name) %}
+    {% call table('Chứng chỉ chuyên môn', ['Tên chứng chỉ', 'Thao tác']) %}
+      {% for certificate in certificates %}<tr><td>{{ certificate }}</td><td>{{ locked('Xóa ' ~ certificate) }}</td></tr>{% endfor %}
+    {% endcall %}
+    {{ pending('Thêm và xóa chứng chỉ đang tắt.') }}
+    {% call controls('Thêm chứng chỉ') %}
+      {{ field('certificate', 'Tên chứng chỉ', required=true, maxlength=100) }}
+    {% endcall %}
+  {% endcall %}
+{% endif %}
+{% endblock %}

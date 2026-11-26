@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% from 'components.html' import field, action_link %}
+{% from 'local02/format.html' import day, money, quota %}
+{% from 'local04/ui.html' import contract_badge %}
+{% block title %}Hợp đồng #{{ contract.id }}{% endblock %}
+{% block content %}
+<section class="surface surface-wide">
+  <div class="surface-header"><h1>{{ contract.plan }}</h1><p>Hợp đồng #{{ contract.id }}</p></div>
+  <div class="form-fields">
+    {% if error %}<p class="alert alert-danger" role="alert">{{ error }}</p>{% endif %}
+    <dl class="record-details">
+      <dt>Hội viên</dt><dd>{{ contract.member_name }}</dd>
+      {% if staff and local04_enabled() %}<dt>Hồ sơ</dt><dd><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.member_profile', member_id=contract.member_id) }}">Mở hồ sơ hội viên</a></dd>{% endif %}
+      <dt>Trạng thái</dt><dd>{{ contract_badge(contract.status, contract.start, ui_today, membership_status) }}</dd>
+      <dt>Ngày bắt đầu</dt><dd>{{ day(contract.start) }}</dd>
+      <dt>Ngày hết hạn</dt><dd>{{ day(contract.end) }}</dd>
+      <dt>Giá đã thanh toán</dt><dd>{{ money(contract.paid) }}</dd>
+    </dl>
+    {% if contract.payment_id %}
+      <section class="workspace-panel">
+        <div class="panel-heading"><h2>Biên lai #{{ contract.payment_id }}</h2>
+          {% if staff and local04_enabled() %}{{ action_link(url_for('pages.admin_receipt', contract_id=contract.id), 'Xem biên lai') }}{% endif %}
+        </div>
+        <p class="mb-0">{{ money(contract.amount) }} · {{ payment_method[contract.method] }} · {{ contract.payment_time.strftime('%d/%m/%Y %H:%M') }}</p>
+      </section>
+    {% endif %}
+    {% if staff and contract.status == 'PENDING_PAYMENT' %}
+      <form class="action-panel" action="{{ url_for('pages.staff_payment', record_id=contract.id) }}" method="post" data-single-submit data-confirm="Xác nhận đã thu đúng số tiền và phương thức đã chọn?">
+        <h2>Thu tiền</h2>
+        <p>Số tiền cần thu <strong>{{ money(contract.price) }}</strong></p>
+        <input type="hidden" name="csrf_token" value="{{ token }}">
+        <input type="hidden" name="amount" value="{{ '{:.2f}'.format(contract.price) }}">
+        <div class="field-grid">
+          {{ field('method', 'Phương thức', required=true, options=payment_method.items()) }}
+          {{ field('mode', 'Thời điểm kích hoạt', required=true, options=[('now', 'Kích hoạt ngay'), ('later', 'Thanh toán trước')]) }}
+        </div>
+        <button class="btn action-button mt-3" type="submit">Xác nhận đã thu tiền</button>
+      </form>
+    {% elif contract.status == 'PENDING_ACTIVATION' %}
+      <section class="action-panel">
+        <h2>Chờ kích hoạt</h2>
+        <p>Đã thanh toán. Gói chưa kích hoạt.</p>
+        {% if staff %}<form action="{{ url_for('pages.staff_activate', record_id=contract.id) }}" method="post" data-single-submit data-confirm="Kích hoạt gói từ hôm nay?">
+        <input type="hidden" name="csrf_token" value="{{ token }}">
+        <button class="btn action-button" type="submit">Kích hoạt gói</button>
+      </form>{% endif %}
+      </section>
+    {% endif %}
+    {% if not staff or local04_enabled() %}
+      <h2>Quyền lợi mỗi chu kỳ</h2>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead><tr><th scope="col">Dịch vụ</th><th scope="col">Định mức</th><th scope="col">Đã dùng</th><th scope="col">Còn lại</th></tr></thead>
+          <tbody>{% for service, limit, used, available in benefits %}
+            <tr><td>{{ service_label(service) }}</td><td>{{ quota(limit) }}</td><td>{{ used }}</td>
+            <td>{{ (quota(limit) if limit == -1 else [0, limit-used]|max) if available else 'Chưa có hiệu lực' }}</td></tr>
+          {% else %}<tr><td colspan="4">Gói chưa có định mức dịch vụ.</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+    {% endif %}
+    <div class="page-actions">{{ action_link(url_for(('pages.admin_contracts' if local04_enabled() else 'pages.staff_contracts') if staff else 'pages.member_area'), 'Về danh sách hợp đồng' if staff else 'Về gói tập của tôi') }}</div>
+  </div>
+</section>
+{% endblock %}

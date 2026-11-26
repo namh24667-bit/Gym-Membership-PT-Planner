@@ -1,0 +1,51 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf, badge %}
+{% from 'local02/benefits.html' import benefit_list %}
+{% block heading %}{{ plan.plan_name if plan else 'Tạo mẫu gói tập' }}{% endblock %}
+{% block screen %}
+<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_catalog') }}">Về danh mục</a></p>
+{% if plan and plan.referenced %}<p class="notice">Gói đã có hợp đồng. Tạo mẫu mới nếu cần thay đổi tên, thời hạn hoặc quota.</p>{% endif %}
+<form method="post" data-single-submit{% if plan %} data-confirm="Lưu thông tin mẫu gói và giá niêm yết hiện tại?"{% endif %}>
+  {{ csrf(token) }}<input type="hidden" name="operation" value="save">
+  <div class="field-grid">
+    {% if plan and plan.referenced %}
+      <p>{{ plan.plan_name }} · {{ plan.duration_months }} tháng</p>
+      <input type="hidden" name="name" value="{{ plan.plan_name }}"><input type="hidden" name="months" value="{{ plan.duration_months }}">
+    {% else %}
+      {{ field('name', 'Tên gói', required=true, maxlength=100, value=plan.plan_name if plan else none) }}
+      {{ field('months', 'Thời hạn (tháng)', 'number', required=true, minimum=1, value=plan.duration_months if plan else none) }}
+    {% endif %}
+    {{ field('price', 'Giá niêm yết (₫)', required=true, inputmode='decimal', value=plan.base_price if plan else none) }}
+    {{ field('description', 'Mô tả', 'textarea', maxlength=500, full=true, value=plan.description if plan else none) }}
+  </div>
+  <button class="btn action-button mt-3" type="submit">{{ 'Lưu mẫu gói' if plan else 'Tạo mẫu gói' }}</button>
+</form>
+{% if plan %}
+<section class="admin-section">
+  <h2>Trạng thái bán</h2>
+  <p>{{ badge('Đang bán' if plan.is_for_sale else 'Ngừng bán', 'ACTIVE' if plan.is_for_sale else '') }}</p>
+  <p class="field-help">Trạng thái bán áp dụng cho lựa chọn gói và lập hợp đồng mới.</p>
+  <form method="post" data-single-submit data-confirm="Xác nhận đổi trạng thái bán của gói này?">
+    {{ csrf(token) }}<input type="hidden" name="operation" value="sale">
+    <input type="hidden" name="for_sale" value="{{ 0 if plan.is_for_sale else 1 }}">
+    <button class="btn {{ 'btn-outline-danger' if plan.is_for_sale else 'btn-outline-secondary' }}" type="submit">{{ 'Ngừng bán' if plan.is_for_sale else 'Mở bán' }}</button>
+  </form>
+</section>
+<section class="admin-section">
+  <h2>Hạn mức dịch vụ mỗi chu kỳ</h2>
+  {{ benefit_list(benefits) }}
+  {% if services %}<form method="post" data-single-submit>
+    {{ csrf(token) }}<input type="hidden" name="operation" value="quota">
+    <div class="field-grid">
+      <label class="field form-label" for="quota-service">Dịch vụ
+        <select name="service" id="quota-service" class="form-select" required><option value="">Chọn dịch vụ</option>
+          {% for item in services %}<option value="{{ item.service_type_id }}">{{ item.service_name }}</option>{% endfor %}
+        </select>
+      </label>
+      {{ field('quota', 'Số lượt', 'number', required=true, minimum=-1, help='Dùng -1 cho quyền lợi không giới hạn.') }}
+    </div><button class="btn action-button mt-3" type="submit">Lưu định mức</button>
+  </form>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import action_link %}
+{% from 'local04/ui.html' import badge %}
+{% from 'local04/staff_directory_ui.html' import pagination %}
+{% block heading %}Danh sách học viên{% endblock %}
+{% block intro %}<p>{{ name }} · Lượt đăng ký còn hiệu lực</p>{% endblock %}
+{% block heading_actions %}{{ action_link(url_for('pages.trainer_schedule_detail', record_id=record_id), 'Về chi tiết lớp') }}{% endblock %}
+{% block screen %}
+{{ pagination(total, page, page_count, previous, following) }}
+{% if roster %}
+<ul class="record-list teaching-roster">
+  {% for member_id, member, status in roster %}
+    <li class="panel-heading"><div><span class="field-help">#{{ member_id }}</span>
+      <strong class="teaching-member">{{ member }}</strong></div>
+      {{ badge('Đã đăng ký', 'ACTIVE') }}
+    </li>
+  {% endfor %}
+</ul>
+{% else %}<p class="empty-panel">Chưa có học viên đăng ký lớp này.</p>{% endif %}
+{% endblock %}

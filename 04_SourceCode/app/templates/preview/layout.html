@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from 'components.html' import icon %}
+{% from 'brand.html' import brand %}
+{% block title %}{{ title }}{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='preview.css') }}">{% endblock %}
+{% block shell_class %} preview-shell{% endblock %}
+{% block main_class %}preview-stage{% endblock %}
+{% block sidebar %}
+<aside class="sidebar preview-sidebar" aria-label="Điều hướng khu vực {{ roles[role]|lower }}">
+  {{ brand(url_for('preview.screen', role=role)) }}
+  <nav class="side-nav" aria-label="{{ roles[role] }}">
+    <span class="menu-heading">{{ roles[role] }}</span>
+    {% for key, label, symbol in menus[role] %}
+    <a href="{{ url_for('preview.screen', role=role, page=key) }}"{% if parent == key and not (role == 'management' and group_is_staff) %} aria-current="page"{% endif %}>{{ icon(symbol, 18) }}<span>{{ label }}</span></a>
+    {% endfor %}
+  </nav>
+  {% if role == 'management' %}
+  <nav class="side-nav operations-menu" aria-label="Vận hành">
+    <span class="menu-heading">Vận hành</span>
+    {% for key, label, symbol in menus.staff %}
+    <a href="{{ url_for('preview.screen', role=role, page=key) }}"{% if parent == key and group_is_staff %} aria-current="page"{% endif %}>{{ icon(symbol, 18) }}<span>{{ label }}</span></a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+  <a class="preview-exit" href="{{ url_for('pages.login') }}">{{ icon('login', 17) }} Trang đăng nhập</a>
+</aside>
+{% endblock %}
+{% block header %}
+<header class="preview-topbar">
+  <span class="preview-banner">{{ icon('info', 17) }} BẢN XEM TRƯỚC — DỮ LIỆU MINH HỌA</span>
+  <nav class="role-picker" aria-label="Khu vực xem trước">
+    {% for key, label in roles.items() %}
+    <a href="{{ url_for('preview.screen', role=key) }}"{% if role == key %} aria-current="true"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </nav>
+</header>
+{% endblock %}
+{% block content %}
+<div class="preview-content">
+  <div class="page-heading">
+    <div>
+      {% if page != parent %}<a class="back-link" href="{{ url_for('preview.screen', role=role, page=parent) }}">Quay về danh sách</a>{% endif %}
+      <h1>{{ title }}</h1>
+      {% block intro %}{% endblock %}
+    </div>
+    {% block heading_action %}{% endblock %}
+  </div>
+  {% block screen %}{% endblock %}
+</div>
+{% endblock %}

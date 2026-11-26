@@ -1,0 +1,21 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import table, empty, badge, buttons %}
+{% from 'local02/format.html' import day %}
+{% block heading %}Danh sách hội viên{% endblock %}
+{% block heading_actions %}<a class="btn action-button" href="{{ url_for('pages.staff_register') }}">Đăng ký hội viên tại quầy</a>{% endblock %}
+{% block screen %}
+<form method="get" class="filter-bar">
+  {{ field('q', 'Tên, email hoặc số điện thoại', value=query, maxlength=100) }}
+  {{ field('status', 'Hiệu lực gói', options=[('ACTIVE', 'Có gói hiệu lực'), ('INACTIVE', 'Chưa có gói hiệu lực')], value=selected_status) }}
+  <div class="page-actions"><button class="btn action-button" type="submit">Tìm hội viên</button><a class="btn btn-outline-secondary" href="{{ url_for('pages.staff_members') }}">Tra cứu theo CCCD</a></div>
+</form>
+{% call table('Hội viên', ['Họ và tên', 'Email', 'Điện thoại', 'Ngày tham gia', 'Hiệu lực gói']) %}
+{% for row in rows %}<tr>
+  <td><strong>{{ row.full_name }}</strong><br><a class="btn btn-outline-secondary row-action mt-1" aria-label="Xem hồ sơ {{ row.full_name }}" href="{{ url_for('pages.member_profile', member_id=row.person_id) }}">Xem hồ sơ</a></td>
+  <td>{{ row.email }}</td><td>{{ row.phone }}</td><td>{{ day(row.join_date) }}</td>
+  <td>{{ badge('Có gói hiệu lực' if row.has_active else 'Chưa có gói hiệu lực', 'ACTIVE' if row.has_active else '') }}</td>
+</tr>{% else %}{{ empty(5) }}{% endfor %}
+{% endcall %}
+{{ buttons(previous, following) }}
+{% endblock %}

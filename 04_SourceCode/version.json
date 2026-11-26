@@ -1,0 +1,7 @@
+{
+  "application": "1.0.1",
+  "database": "local05c-r1b.1",
+  "release": "1.0.1",
+  "update_from": ["1.0.0"],
+  "sql_steps": ["ops/portable/schema.sql", "ops/portable/clean_compat.py", "class-rules"]
+}

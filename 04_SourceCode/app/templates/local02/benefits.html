@@ -1,0 +1,21 @@
+{% from 'components.html' import icon %}
+{% macro benefit_list(benefits) %}
+<ul class="plan-benefits">
+  {% for benefit in benefits %}
+  <li class="plan-benefit" data-benefit-state="{{ benefit.state }}">
+    {{ icon(benefit.icon, 18) }}
+    <div><span class="plan-benefit-label">{{ benefit.label }}</span>
+      <span class="plan-benefit-value">
+        {% if benefit.state == 'finite' %}{{ benefit.quota }} lượt / chu kỳ
+        {% elif benefit.state == 'empty' %}0 lượt / chu kỳ
+        {% elif benefit.state == 'unlimited' %}Không giới hạn
+        {% elif benefit.state == 'missing' %}Không bao gồm
+        {% elif benefit.state == 'ambiguous' %}Có nhiều định mức cần đối chiếu
+        {% else %}Chưa xác định định mức{% endif %}
+      </span>
+      {% if benefit.state == 'ambiguous' %}<small>{{ benefit.source_names|join(' · ') }}</small>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}

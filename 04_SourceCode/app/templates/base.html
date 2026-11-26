@@ -1,0 +1,45 @@
+<!doctype html>
+{% from 'components.html' import icon %}
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} · IronPulse</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='ironpulse-mark.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Chuyển đến nội dung</a>
+  <div class="shell{% block shell_class %}{% endblock %}">
+    {% block sidebar %}{% include 'sidebar.html' %}{% endblock %}
+    <div class="workspace">
+      {% block header %}<header class="topbar">
+        {% set area = 'Quản lý' if identity and 'management' in identity.roles else 'Tại quầy' if identity and 'staff' in identity.roles else 'Huấn luyện viên' if identity and 'trainer' in identity.roles else 'Hội viên' %}
+        <div class="page-trail"><span>{{ area }}</span>{{ icon('chevron', 15) }}<strong>{{ self.title() }}</strong></div>
+        {% if identity %}
+        <details class="account-menu">
+          <summary aria-label="Tài khoản {{ identity.full_name }}"><span class="account-avatar" aria-hidden="true">{{ identity.full_name[:1]|upper }}</span>
+            <span class="account-text"><strong>{{ identity.full_name }}</strong><small>Tài khoản<span class="account-role"> · {{ area }}</span></small></span>{{ icon('chevron', 16) }}</summary>
+          <div class="account-options">
+            {% if profile_available %}
+            <a class="btn btn-outline-secondary profile-menu-link" href="{{ url_for('pages.personal_profile') }}"{% if request.endpoint == 'pages.personal_profile' %} aria-current="page"{% endif %}>{{ icon('person', 17) }} Thông tin cá nhân</a>
+            {% endif %}
+            <form method="post" action="{{ url_for('pages.logout') }}">
+              <input type="hidden" name="csrf_token" value="{{ logout_token }}">
+              <button class="btn btn-outline-secondary" type="submit">{{ icon('logout', 17) }} Đăng xuất</button>
+            </form>
+          </div>
+        </details>
+        {% endif %}
+      </header>{% endblock %}
+      <main class="{% block main_class %}stage{% endblock %}{% if not identity %} stage-public{% endif %}" id="main" tabindex="-1">
+        {% for message in get_flashed_messages() %}<p class="alert alert-success" role="status">{{ message }}</p>{% endfor %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='form-submit.js') }}" defer></script>
+</body>
+</html>

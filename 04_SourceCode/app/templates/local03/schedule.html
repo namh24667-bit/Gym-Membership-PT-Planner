@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% from 'local03/time.html' import moment, interval %}
+{% from 'local04/ui.html' import badge, week_select %}
+{% block title %}Lịch tập{% endblock %}
+{% block content %}
+<section class="surface surface-admin"{% if mode != 'member' and not details %} data-agenda{% endif %}>
+ <div class="surface-header"><h1>{{ 'Lịch của tôi' if mode == 'member' else 'Lịch dạy của tôi' if mode == 'trainer' else 'Lịch PT và lớp nhóm' }}</h1></div>
+ <div class="form-fields">
+ {% if mode == 'member' %}
+   <div class="page-actions"><a class="btn action-button" href="{{ url_for('pages.schedule_form') }}">Đặt lịch PT</a><a class="btn btn-outline-secondary" href="{{ url_for('pages.member_classes') }}">Lớp nhóm</a><a class="btn btn-outline-secondary" href="{{ url_for('pages.member_area') }}">Gói tập và lượt còn lại</a></div>
+   <h2>Lịch PT</h2>
+   <ul class="record-list">{% for sid, coach, room, start, end, focus in pt %}
+    <li><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.member_pt_detail', record_id=sid) }}">{{ interval(start, end) }}</a> · {{ coach }} · {{ room }} · {{ focus }}</li>
+   {% else %}<li>Chưa có lịch PT.</li>{% endfor %}</ul>
+   <h2>Lớp nhóm đã đăng ký</h2>
+   <p class="field-help">Hủy chỗ trước ít nhất 5 giờ so với giờ bắt đầu để được hoàn một lượt.</p>
+   <div class="table-responsive" role="region" aria-label="Lớp nhóm đã đăng ký" tabindex="0"><table class="table align-middle session-table" role="table">
+    <thead role="rowgroup"><tr role="row"><th scope="col">Lớp</th><th scope="col">Khung giờ</th><th scope="col">Trạng thái</th><th scope="col">Thao tác</th></tr></thead>
+    <tbody role="rowgroup">{% for booking, name, start, end, state, cancelled, sid, can_cancel, usage in groups %}
+     <tr role="row"><td role="cell">{{ name }}</td><td role="cell"><span class="mobile-cell-label" aria-hidden="true">Khung giờ</span>{{ interval(start, end) }}</td>
+     <td role="cell"><span class="mobile-cell-label" aria-hidden="true">Trạng thái</span>{{ badge('Đã đăng ký' if state == 'SUCCESS' else 'Đã hủy', 'ACTIVE' if state == 'SUCCESS' else 'EXPIRED') }}{% if cancelled %}<br>{{ moment(cancelled) }}{% endif %}
+     {% if usage == 'REFUNDED' %}<br>Đã hoàn một lượt{% endif %}</td>
+     <td role="cell">{% if can_cancel %}<form method="post" action="{{ url_for('pages.cancel_group', session_id=booking) }}"
+      data-single-submit data-confirm="Xác nhận hủy chỗ? Hủy trước ít nhất 5 giờ mới được hoàn quota.">
+       <input type="hidden" name="csrf_token" value="{{ token }}"><button type="submit" class="btn btn-outline-danger">Hủy chỗ</button>
+      </form>{% elif state == 'CANCEL' %}<a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.member_classes') }}">Kiểm tra chỗ để đặt lại</a>{% endif %}</td></tr>
+    {% else %}<tr role="row"><td role="cell" colspan="4">Chưa đăng ký lớp nhóm.</td></tr>{% endfor %}</tbody>
+   </table></div>
+ {% elif mode == 'trainer' %}
+   {% if records %}
+     <p>Ngày vào làm {{ records[0][8].strftime('%d/%m/%Y') }} · {{ 'Đang làm việc' if records[0][9] == 'ACTIVE' else 'Tạm nghỉ' }}</p>
+     {% if records[0][9] != 'ACTIVE' %}<p class="notice">Tình trạng hiện tại chưa cho phép phân công lịch mới.</p>{% endif %}
+   {% endif %}
+   {% if not details %}
+   {{ week_select('trainer-week') }}
+   {% for date, entries in agenda %}
+   <section class="agenda-day" data-week="{{ date.strftime('%G-W%V') }}">
+     <h2>{{ 'Hôm nay · ' if date == now.date() else '' }}{{ date.strftime('%d/%m/%Y') }}</h2>
+     <ul class="record-list">
+     {% for sid, kind, start, end, room, name, member, focus, hire, employment, count, cap in entries %}
+     <li class="agenda-row"><time datetime="{{ start.isoformat() }}">{{ start.strftime('%H:%M') }} – {{ end.strftime('%H:%M') }}</time>
+       <div><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.trainer_schedule_detail', record_id=sid) }}">{{ name or 'PT cá nhân' }}</a><br><small>{{ room }}{% if member %} · {{ member }}{% endif %}</small></div>
+       <div>{{ badge('Đã kết thúc' if end <= now else 'Đang diễn ra' if start <= now else 'Sắp tới', 'EXPIRED' if end <= now else 'AVAILABLE') }}
+       {% if count is not none %}<br><small>{{ count }}/{{ cap }} học viên</small>{% endif %}</div></li>
+     {% endfor %}
+     </ul>
+   </section>
+   {% else %}<p class="empty-panel">Chưa có lịch được phân công.</p>{% endfor %}
+   {% else %}
+   <ul class="record-list">{% for sid, kind, start, end, room, name, member, focus, hire, employment, count, cap in records %}
+    <li><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.trainer_schedule_detail', record_id=sid) }}">{{ name or 'PT cá nhân' }} · {{ interval(start, end) }}</a>
+     · {{ room }}{% if count is not none %} · {{ count }}/{{ cap }} học viên{% endif %}
+     {% if details and member %}<p>Hội viên {{ member }} · Mục tiêu {{ focus }}</p>
+      {% if employment == 'ACTIVE' %}<form method="post" data-single-submit>
+       <input type="hidden" name="csrf_token" value="{{ token }}">
+       <label for="focus">Mục tiêu PT</label><input class="form-control" id="focus" name="focus" value="{{ focus }}" maxlength="200" required>
+       <button type="submit" class="btn action-button mt-2">Lưu mục tiêu</button>
+      </form>{% endif %}
+     {% elif details and name %}<ul>{% for person in participants %}<li>{{ person[0] }}</li>{% else %}<li>Chưa có hội viên đăng ký.</li>{% endfor %}</ul>{% endif %}
+    </li>
+   {% else %}<li>Chưa có lịch được phân công.</li>{% endfor %}</ul>
+   {% endif %}
+ {% else %}
+   {% if manager %}
+    <div class="page-actions"><a class="btn action-button" href="{{ url_for('pages.new_group_class') }}">Tạo lớp nhóm</a>
+    <form method="post" data-single-submit><input type="hidden" name="csrf_token" value="{{ token }}">
+     <button type="submit" class="btn btn-outline-secondary">Cập nhật trạng thái gói hết hạn</button>
+    </form>
+    </div>
+   {% endif %}
+   {{ week_select('operations-week') }}
+   {% for date, entries in agenda %}
+   <section class="agenda-day" data-week="{{ date.strftime('%G-W%V') }}">
+     <h2>{{ 'Hôm nay · ' if date == now.date() else '' }}{{ date.strftime('%d/%m/%Y') }}</h2>
+     <ul class="record-list">
+     {% for id, kind, start, end, room, coach, name, member, count, capacity in entries %}
+     <li class="agenda-row"><time datetime="{{ start.isoformat() }}">{{ start.strftime('%H:%M') }} – {{ end.strftime('%H:%M') }}</time>
+       <div>{% if manager and kind == 'GROUP' and local04_enabled() %}<a class="btn btn-outline-secondary row-action" aria-label="Chỉnh sửa lớp {{ name }}" href="{{ url_for('pages.admin_class', class_id=id) }}">{{ name }}</a>
+       {% else %}<strong>{{ name or 'PT cá nhân' }}</strong>{% endif %}<br><small>{{ coach }} · {{ room }}</small></div>
+       <div>{{ badge('Đã kết thúc' if end <= now else 'Đang diễn ra' if start <= now else 'Sắp tới', 'EXPIRED' if end <= now else 'AVAILABLE') }}
+         <br><small>{{ member if member else count ~ '/' ~ capacity ~ ' học viên' if capacity is not none else '—' }}</small></div></li>
+     {% endfor %}
+     </ul>
+   </section>
+   {% else %}<p class="empty-panel">Chưa có lịch tập.</p>{% endfor %}
+ {% endif %}
+ </div>
+</section>
+{% endblock %}

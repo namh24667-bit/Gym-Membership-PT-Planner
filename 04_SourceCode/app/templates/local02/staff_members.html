@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% from 'local02/format.html' import day %}
+{% block title %}Danh sách hội viên{% endblock %}
+{% block content %}
+<section class="surface surface-wide">
+  <div class="surface-header"><h1>Danh sách hội viên</h1></div>
+  <div class="form-fields">
+    <p><a class="btn action-button" href="{{ url_for('pages.staff_register') }}">Đăng ký hội viên tại quầy</a></p>
+    <form method="post" class="d-flex flex-wrap gap-2 align-items-center">
+      <input type="hidden" name="csrf_token" value="{{ token }}">
+      <label for="query">Tên, điện thoại, email hoặc CCCD</label>
+      <input id="query" name="q" class="form-control w-auto" maxlength="100" value="{{ query }}">
+      <button type="submit" class="btn action-button">Tìm hội viên</button>
+    </form>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th scope="col">Hội viên</th><th scope="col">Email</th><th scope="col">Điện thoại</th><th scope="col">Tham gia</th><th scope="col">Gói hiện tại</th></tr></thead>
+        <tbody>{% for id, name, email, phone, joined, active in members %}
+          <tr><td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.staff_member', member_id=id) }}">{{ name }}</a></td><td>{{ email }}</td><td>{{ phone }}</td><td>{{ day(joined) }}</td><td>{{ 'Đang hoạt động' if active else 'Không có gói hoạt động' }}</td></tr>
+        {% else %}<tr><td colspan="5">Không tìm thấy hội viên.</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+    <p><a href="{{ url_for('pages.staff_area') }}">Về trang nhân viên</a></p>
+  </div>
+</section>
+{% endblock %}

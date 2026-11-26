@@ -1,0 +1,22 @@
+{% extends 'local04/layout.html' %}
+{% from 'local02/format.html' import money %}
+{% from 'local03/time.html' import moment %}
+{% block heading %}Biên lai #{{ item.payment_id }}{% endblock %}
+{% block heading_actions %}<button class="btn btn-outline-secondary" type="button" data-print hidden>In biên lai</button>{% endblock %}
+{% block screen %}
+<div class="receipt-paper">
+<p class="receipt-amount"><span>Số tiền đã thanh toán</span><strong>{{ money(item.amount) }}</strong></p>
+<dl class="record-details">
+  <dt>Hội viên</dt><dd>{{ item.full_name }}</dd>
+  <dt>Hợp đồng</dt><dd>#{{ item.membership_id }} · {{ item.plan_name }}</dd>
+  <dt>Thời điểm</dt><dd>{{ moment(item.payment_time) }}</dd>
+  <dt>Phương thức</dt><dd>{{ payment_method[item.payment_method] }}</dd>
+  <dt>Người ghi nhận</dt><dd>{{ item.recorded_by or 'Chưa lưu' }}</dd>
+</dl>
+</div>
+<nav class="page-actions screen-only" aria-label="Thao tác biên lai">
+  <a class="btn btn-outline-secondary" href="{{ url_for('pages.staff_contract', record_id=item.membership_id) }}">Xem hợp đồng</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('pages.member_profile', member_id=item.person_id) }}">Xem hồ sơ hội viên</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('pages.admin_payments') }}">Về danh sách thanh toán</a>
+</nav>
+{% endblock %}

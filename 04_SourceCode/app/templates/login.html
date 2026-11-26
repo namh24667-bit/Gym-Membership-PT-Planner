@@ -1,0 +1,25 @@
+{% extends 'auth_layout.html' %}
+{% from 'components.html' import field, notice, action_link %}
+{% set public_auth = true %}
+{% block title %}Đăng nhập{% endblock %}
+{% block auth_message %}<p class="auth-slogan">Bứt phá<br><em>giới hạn.</em></p><p>Mỗi buổi tập, một bước tiến.</p>{% endblock %}
+{% block form_content %}
+  <div class="surface-header"><h1 id="page-title">Đăng nhập</h1><p>Truy cập tài khoản IronPulse của bạn.</p></div>
+  {% if login_error %}
+    <div role="alert">{{ notice('Đăng nhập thất bại', login_error, 'login-status') }}</div>
+  {% elif https_required %}
+    {{ notice('Yêu cầu HTTPS', 'Mở địa chỉ HTTPS của IronPulse để đăng nhập.', 'login-status') }}
+  {% elif not login_token %}
+    {{ notice('Chưa tích hợp', 'Đăng nhập sẽ khả dụng khi hệ thống xác thực được kết nối.', 'login-status') }}
+  {% endif %}
+  <form method="post" action="{{ url_for('pages.login_submit') }}" data-single-submit{% if login_error or not login_token %} aria-describedby="login-status"{% endif %}>
+    {% if login_token %}<input type="hidden" name="csrf_token" value="{{ login_token }}">{% endif %}
+    <fieldset{% if not login_token %} disabled{% endif %} class="form-fields">
+      {{ field('email', 'Email', 'email', required=true, autocomplete='username', maxlength=255) }}
+      {{ field('password', 'Mật khẩu', 'password', required=true, autocomplete='current-password', reveal=login_token is not none) }}
+      <button type="submit" class="btn action-button">Đăng nhập</button>
+    </fieldset>
+  </form>
+  <div class="surface-footer auth-actions"><span>Chưa có tài khoản?</span>{{ action_link(url_for('pages.register'), 'Đăng ký hội viên') }}</div>
+  {% if preview_available %}<p class="mt-3 mb-0"><a href="{{ url_for('preview.screen', role='member') }}">Xem trước giao diện</a></p>{% endif %}
+{% endblock %}

@@ -1,0 +1,67 @@
+{% from 'components.html' import icon %}
+
+{% macro badge(code) %}
+{% set styles = {
+  'ACTIVE': ('Đang hoạt động', 'green'), 'EXPIRED': ('Hết hạn', 'gray'),
+  'PENDING_PAYMENT': ('Chờ thanh toán', 'amber'), 'PENDING_ACTIVATION': ('Chờ kích hoạt', 'blue'),
+  'AVAILABLE': ('Khả dụng', 'green'), 'MAINTENANCE': ('Bảo trì', 'amber'), 'RETIRED': ('Ngừng sử dụng', 'gray'),
+  'ON_LEAVE': ('Nghỉ phép', 'amber'), 'TERMINATED': ('Đã nghỉ việc', 'gray'),
+  'SUCCESS': ('Đã đặt', 'green'), 'CANCEL': ('Đã hủy', 'gray'),
+  'PERSONAL': ('PT', 'blue'), 'GROUP': ('Lớp nhóm', 'green')
+} %}
+{% set label, tone = styles.get(code, (code, 'gray')) %}
+<span class="status-badge tone-{{ tone }}" title="{{ code }}"><span aria-hidden="true"></span>{{ label }}</span>
+{% endmacro %}
+
+{% macro money(value) %}{% if value is not none %}{{ '{:,}'.format(value)|replace(',', '.') }} ₫{% else %}—{% endif %}{% endmacro %}
+{% macro payment_method(code) %}{{ {'CASH': 'Tiền mặt', 'BANK_TRANSFER': 'Chuyển khoản'}.get(code, code) }}{% endmacro %}
+{% macro quota(value) %}{{ 'Không giới hạn' if value == -1 else value ~ ' lượt' }}{% endmacro %}
+{% macro link(label, role, page, record_id=none) %}
+<a class="detail-link" href="{{ url_for('preview.screen', role=role, page=page, record_id=record_id) }}">{{ label }}</a>
+{% endmacro %}
+{% macro locked(label) %}
+<button class="btn pending-button" type="button" disabled>{{ icon('lock', 14) }} {{ label }}<span class="visually-hidden"> · Chưa tích hợp</span></button>
+{% endmacro %}
+{% macro pending(message='Thao tác lưu đang được vô hiệu hóa trong bản xem trước.') %}
+<p class="pending-note">{{ icon('lock', 16) }}<span><strong>Chưa tích hợp.</strong> {{ message }}</span></p>
+{% endmacro %}
+{% macro panel(title, anchor=none) %}
+<section class="preview-panel"{% if anchor %} id="{{ anchor }}"{% endif %}><h2>{{ title }}</h2>{{ caller() }}</section>
+{% endmacro %}
+{% macro table(caption, columns) %}
+<div class="preview-table-scroll table-responsive" tabindex="0" role="region" aria-label="{{ caption }}">
+  <table class="table preview-table align-middle">
+    <caption class="visually-hidden">{{ caption }}</caption>
+    <thead><tr>{% for column in columns %}<th scope="col">{{ column }}</th>{% endfor %}</tr></thead>
+    <tbody>{{ caller() }}</tbody>
+  </table>
+</div>
+{% endmacro %}
+{% macro empty_row(column_count) %}<tr><td colspan="{{ column_count }}" class="empty-row">Không có dữ liệu minh họa phù hợp.</td></tr>{% endmacro %}
+{% macro metrics(items) %}
+<div class="metric-grid">
+  {% for label, value, symbol in items %}
+  <div class="metric-card">
+    <div class="metric-symbol">{{ icon(symbol, 20) }}</div><span>{{ label }}</span><strong>{{ value }}</strong>
+  </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+{% macro filters(role, page, parameter, options, selected, label) %}
+<nav class="filter-pills" aria-label="{{ label }}">
+  {% for value, caption in options %}
+  <a href="{{ url_for('preview.screen', role=role, page=page, **{parameter: value}) }}"{% if selected == value %} aria-current="true"{% endif %}>{{ caption }}</a>
+  {% endfor %}
+</nav>
+{% endmacro %}
+{% macro controls(action) %}
+<fieldset disabled class="preview-fields">{{ caller() }}<div>{{ locked(action) }}</div></fieldset>
+{% endmacro %}
+{% macro facts(items) %}
+<dl class="facts">
+  {% for label, value in items %}<div><dt>{{ label }}</dt><dd>{{ value if value is not none else '—' }}</dd></div>{% endfor %}
+</dl>
+{% endmacro %}
+{% macro occupancy(item) %}
+<span class="occupancy"><span>{{ item.enrolled }}/{{ item.capacity }}</span><progress value="{{ item.enrolled }}" max="{{ item.capacity }}" aria-label="Sĩ số {{ item.enrolled }} trên {{ item.capacity }}"></progress></span>
+{% endmacro %}

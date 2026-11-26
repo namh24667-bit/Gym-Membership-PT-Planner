@@ -1,0 +1,7 @@
+{
+  "server": "lpc:YOUR-PC\\SQLEXPRESS",
+  "database": "IronPulse_QA",
+  "login": "YOUR-PC\\IronPulseTeamApp",
+  "port": 5443,
+  "database_schema": "local05c-r1b.1"
+}

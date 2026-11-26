@@ -1,0 +1,2 @@
+{% macro moment(value) %}{{ value.strftime('%d/%m/%Y %H:%M') if value else '—' }}{% endmacro %}
+{% macro interval(start, end) %}{{ moment(start) }} – {{ end.strftime('%H:%M') if start.date() == end.date() else moment(end) }}{% endmacro %}

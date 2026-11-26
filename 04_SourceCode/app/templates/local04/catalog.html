@@ -1,0 +1,32 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf, table, empty, badge, buttons %}
+{% from 'local02/format.html' import money %}
+{% block heading %}Danh mục gói tập và dịch vụ{% endblock %}
+{% block intro %}<p>Xem cả mẫu đang bán và ngừng bán.</p>{% endblock %}
+{% block heading_actions %}<a class="btn action-button" href="{{ url_for('pages.admin_plan') }}">Tạo mẫu gói</a>{% endblock %}
+{% block screen %}
+<form method="get" class="d-flex gap-2 align-items-end flex-wrap">
+  {{ field('q', 'Tên gói', value=query, maxlength=100) }}
+  <button class="btn btn-outline-secondary" type="submit">Tìm gói</button>
+</form>
+{% call table('Mẫu gói tập', ['Tên gói', 'Thời hạn', 'Giá niêm yết', 'Khả dụng']) %}
+{% for row in rows %}<tr><td><strong>{{ row.plan_name }}</strong><br><a class="btn btn-outline-secondary row-action mt-1" aria-label="Chỉnh sửa gói {{ row.plan_name }}" href="{{ url_for('pages.admin_plan_detail', plan_id=row.plan_id) }}">Chỉnh sửa gói</a></td>
+  <td>{{ row.duration_months }} tháng</td><td>{{ money(row.base_price) }}</td>
+  <td>{{ badge('Đang bán' if row.is_for_sale else 'Ngừng bán', 'ACTIVE' if row.is_for_sale else '') }}</td>
+</tr>{% else %}{{ empty(4) }}{% endfor %}{% endcall %}
+{{ buttons(previous, following) }}
+<section class="admin-section">
+  <h2>Loại dịch vụ</h2>
+  {% call table('Danh mục dịch vụ', ['Tên dịch vụ', 'Mô tả']) %}
+    {% for row in services %}<tr><td>{{ row.service_name }}</td><td>{{ row.description or '—' }}</td></tr>
+    {% else %}{{ empty(2) }}{% endfor %}
+  {% endcall %}
+  <form method="post" data-single-submit>
+    {{ csrf(token) }}<div class="field-grid">
+      {{ field('name', 'Tên dịch vụ mới', required=true, maxlength=100) }}
+      {{ field('description', 'Mô tả', maxlength=500) }}
+    </div><button class="btn action-button mt-3" type="submit">Thêm dịch vụ</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}{{ code }} · {{ title }}{% endblock %}
+{% block content %}
+<section class="surface" aria-labelledby="page-title">
+  <div class="surface-header"><p class="error-code">{{ code }}</p><h1 id="page-title">{{ title }}</h1></div>
+  <p class="notice" id="error-status">{{ detail }}</p>
+  <a class="btn action-button" href="{{ url_for('pages.home' if identity else 'pages.login') }}">{{ 'Về trang chính' if identity else 'Về trang đăng nhập' }}</a>
+</section>
+{% endblock %}

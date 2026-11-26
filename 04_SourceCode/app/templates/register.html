@@ -1,0 +1,22 @@
+{% extends 'auth_layout.html' %}
+{% from 'components.html' import notice %}
+{% set public_auth = not counter and not identity %}
+{% block title %}Đăng ký hội viên{% endblock %}
+{% block auth_variant %} auth-registration{% endblock %}
+{% block auth_message %}<p class="auth-slogan">Bắt đầu<br><em>hành trình.</em></p>{% endblock %}
+{% block form_content %}
+  <div class="surface-header{% if not public_auth %} page-heading{% endif %}"><div>
+    <h1 id="page-title">{{ 'Đăng ký hội viên tại quầy' if counter else 'Đăng ký hội viên' }}</h1>
+    <p>Trường có dấu <span class="required-mark">*</span> là bắt buộc.</p>
+  </div>{% if not counter %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.login') }}">Quay lại đăng nhập</a>{% endif %}</div>
+  {% if not enabled %}{{ notice('Chưa tích hợp', 'Biểu mẫu tạo tài khoản chưa được bật trong phiên này.', 'register-status') }}{% endif %}
+  {% if error %}<p class="alert alert-danger" role="alert" id="register-error">{{ error }}</p>{% endif %}
+  <form method="post" action="{{ url_for('pages.staff_register' if counter else 'pages.register_unavailable') }}" data-single-submit{% if error %} aria-describedby="register-error"{% elif not enabled %} aria-describedby="register-status"{% endif %}>
+    {% if enabled %}<input type="hidden" name="csrf_token" value="{{ registration_token }}">{% endif %}
+    <fieldset{% if not enabled %} disabled{% endif %} class="form-fields">
+      {% include 'registration_fields.html' %}
+      <button type="submit" class="btn action-button">Đăng ký hội viên</button>
+    </fieldset>
+  </form>
+  {% if counter %}<p class="surface-footer"><a href="{{ url_for('pages.member_directory' if local04_enabled() else 'pages.staff_members') }}">Về danh sách hội viên</a></p>{% endif %}
+{% endblock %}

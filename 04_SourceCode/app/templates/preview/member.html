@@ -1,0 +1,133 @@
+{% extends 'preview/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'preview/ui.html' import badge, money, payment_method, quota, link, locked, pending, panel, table, metrics, controls, facts, occupancy %}
+{% block intro %}
+{% if page == 'overview' %}<p>Gói tập, quota và lịch tập của hội viên.</p>
+{% elif page == 'memberships' %}<p>Theo dõi hiệu lực, trạng thái và biên lai của từng chu kỳ.</p>
+{% elif page == 'plans' %}<p>So sánh thời hạn, giá niêm yết và quyền lợi.</p>
+{% elif page == 'classes' %}<p>Tra lịch lớp, huấn luyện viên và số chỗ.</p>
+{% endif %}
+{% endblock %}
+{% block screen %}
+{% if page == 'overview' %}
+  {% set active = data.memberships['IP-104'] %}
+  <section class="preview-hero">
+    <h2>{{ active.member }}</h2>
+    <p>{{ data.plans[active.plan].name }} · Có hiệu lực đến {{ active.end }}</p>
+    {{ link('Xem chi tiết gói đang hoạt động', role, 'membership', 'IP-104') }}
+  </section>
+  {{ metrics([('Gói đang hoạt động', 1, 'card'), ('Lớp nhóm đã đặt', 1, 'people'), ('Lịch PT đã đặt', 1, 'calendar')]) }}
+  {% call panel('Lịch tập tiếp theo') %}
+    {% set group = data.classes.yoga %}
+    {% set personal = data.pt_sessions['pt-01'] %}
+    {% call table('Lịch tập tiếp theo', ['Buổi tập', 'Khung giờ', 'Phòng', 'Loại']) %}
+      <tr><td>{{ group.name }}</td><td>{{ group.date }} · {{ group.time }}</td><td>{{ group.room }}</td><td>{{ badge('GROUP') }}</td></tr>
+      <tr><td>{{ personal.name }}</td><td>{{ personal.date }} · {{ personal.time }}</td><td>{{ personal.room }}</td><td>{{ badge('PERSONAL') }}</td></tr>
+    {% endcall %}
+    <div>{{ link('Xem lịch đã đặt', role, 'schedule') }}</div>
+  {% endcall %}
+{% elif page == 'memberships' %}
+  {% call panel('Lịch sử gói tập') %}
+    {% call table('Lịch sử gói tập', ['Mã gói', 'Gói tập', 'Trạng thái', 'Bắt đầu', 'Hết hạn', 'Giá đã chốt', 'Chi tiết']) %}
+      {% for key, membership in data.memberships.items() %}
+      <tr><td>{{ key }}</td><td><strong>{{ data.plans[membership.plan].name }}</strong></td>
+        <td>{{ badge(membership.status) }}</td><td>{{ membership.start or '—' }}</td><td>{{ membership.end or '—' }}</td>
+        <td>{{ money(membership.price) }}</td><td>{{ link('Xem ' ~ key, role, 'membership', key) }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'membership' %}
+  {% set plan = data.plans[record.plan] %}
+  {% call panel(plan.name) %}
+    {{ facts([('Mã gói', record_id), ('Trạng thái', badge(record.status)), ('Bắt đầu', record.start),
+              ('Hết hạn', record.end), ('Giá đã chốt', money(record.price))]) }}
+  {% endcall %}
+  <div class="panel-grid">
+    {% call panel('Quyền lợi và quota') %}
+      {% call table('Quyền lợi và quota theo chu kỳ', ['Dịch vụ', 'Hạn mức / chu kỳ', 'Lượt đã ghi']) %}
+        {% for service, allowance in plan.benefits %}
+        <tr><td>{{ service }}</td><td>{{ quota(allowance) }}</td><td>{{ usage_count.get(service, 0) }}</td></tr>
+        {% endfor %}
+      {% endcall %}
+      <p class="preview-helper">Chỉ tính lượt USED của gói này. Lượt REFUNDED được loại khỏi số đếm.</p>
+    {% endcall %}
+    {% call panel('Biên lai thanh toán') %}
+      {% if record.payment %}
+        {{ facts([('Số tiền', money(record.price)), ('Phương thức', payment_method(record.payment[0])),
+                  ('Thời điểm thanh toán', record.payment[1])]) }}
+      {% else %}<p class="preview-helper">Gói này chưa có biên lai.</p>{% endif %}
+    {% endcall %}
+  </div>
+{% elif page == 'plans' %}
+  <div class="plan-grid">
+  {% for key, plan in data.plans.items() %}
+    {% call panel(plan.name) %}
+      {{ facts([('Thời hạn', plan.months ~ ' tháng'), ('Giá niêm yết', money(plan.price))]) }}
+      <p class="preview-helper">{{ plan.description }}</p>
+      <div>{{ link('Xem quyền lợi ' ~ plan.name, role, 'plan', key) }}</div>
+    {% endcall %}
+  {% endfor %}
+  </div>
+{% elif page == 'plan' %}
+  {% call panel(record.name) %}
+    {{ facts([('Thời hạn', record.months ~ ' tháng'), ('Giá niêm yết', money(record.price))]) }}
+    <p class="preview-helper">{{ record.description }}</p>
+    {% call table('Dịch vụ kèm theo', ['Dịch vụ', 'Hạn mức / chu kỳ']) %}
+      {% for service, allowance in record.benefits %}<tr><td>{{ service }}</td><td>{{ quota(allowance) }}</td></tr>{% endfor %}
+    {% endcall %}
+    {{ pending('Đăng ký gói mới chưa được kết nối.') }}
+    <div>{{ locked('Đăng ký gói') }}</div>
+  {% endcall %}
+{% elif page == 'classes' %}
+  {% call panel('Lịch lớp nhóm') %}
+    {% call table('Lịch lớp nhóm', ['Lớp / thể loại', 'Huấn luyện viên', 'Phòng', 'Khung giờ', 'Sĩ số', 'Đăng ký']) %}
+      {% for item in data.classes.values() %}
+      <tr><td><strong>{{ item.name }}</strong><br><span class="preview-helper">{{ item.category }}</span></td>
+        <td>{{ item.trainer }}</td><td>{{ item.room }}</td><td>{{ item.date }}<br>{{ item.time }}</td>
+        <td>{{ occupancy(item) }}</td><td>{{ locked('Đặt chỗ') }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    {{ pending('Đặt chỗ sẽ cần kiểm tra gói, lịch trùng, sĩ số và quota.') }}
+  {% endcall %}
+{% elif page == 'pt' %}
+  <div class="panel-grid">
+    {% call panel('Thông tin buổi tập') %}
+      {{ pending('Chưa gửi yêu cầu PT. Thiết kế hiện tại chưa có thao tác hủy PT.') }}
+      {% call controls('Đăng ký buổi PT') %}
+        <div class="field-grid">
+          {{ field('pt_trainer', 'Huấn luyện viên', required=true, options=[('trainer-01', 'HLV Mẫu 01')], full=true) }}
+          {{ field('pt_room', 'Phòng tập', required=true, options=[('pt-zone', 'Khu PT')], full=true) }}
+          {{ field('pt_start', 'Bắt đầu', 'datetime-local', required=true) }}
+          {{ field('pt_end', 'Kết thúc', 'datetime-local', required=true) }}
+          {{ field('pt_focus', 'Mục tiêu buổi tập', 'textarea', required=true, maxlength=200, full=true) }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+    {% call panel('Huấn luyện viên') %}
+      {% call table('Trạng thái và chứng chỉ HLV', ['HLV', 'Giới tính', 'Trạng thái', 'Chứng chỉ']) %}
+        {% for name, gender, status, certificates in data.trainers %}
+        <tr><td>{{ name }}</td><td>{{ gender }}</td><td>{{ badge(status) }}</td><td>{{ certificates|join(', ') }}</td></tr>
+        {% endfor %}
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% elif page == 'schedule' %}
+  {% call panel('Lớp nhóm đã đặt') %}
+    {% call table('Lịch lớp nhóm đã đặt', ['Lớp', 'Lịch tập', 'Trạng thái', 'Giờ hủy', 'Thao tác']) %}
+      {% for key, status, cancelled_at in data.bookings %}
+      {% set item = data.classes[key] %}
+      <tr><td><strong>{{ item.name }}</strong></td><td>{{ item.date }} · {{ item.time }}</td>
+        <td>{{ badge(status) }}</td><td>{{ cancelled_at or '—' }}</td>
+        <td>{{ locked('Hủy chỗ' if status == 'SUCCESS' else 'Đặt lại') }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    {{ pending('Hủy hoặc đặt lại chưa được kết nối. Mốc hoàn quota lớp nhóm theo tài liệu là 5 giờ trước buổi học; cách xử lý tại đúng mốc đang chờ xác nhận.') }}
+  {% endcall %}
+  {% call panel('Lịch PT đã đặt') %}
+    {% set item = data.pt_sessions['pt-01'] %}
+    {% call table('Lịch PT của hội viên', ['Khung giờ', 'Huấn luyện viên', 'Phòng', 'Mục tiêu']) %}
+      <tr><td>{{ item.date }} · {{ item.time }}</td><td>{{ item.trainer }}</td><td>{{ item.room }}</td><td>{{ item.focus }}</td></tr>
+    {% endcall %}
+  {% endcall %}
+{% endif %}
+{% endblock %}

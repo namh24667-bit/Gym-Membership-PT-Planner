@@ -1,0 +1,238 @@
+{% extends 'preview/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'preview/ui.html' import badge, money, payment_method, quota, link, locked, pending, panel, table, metrics, controls, facts, occupancy %}
+{% block intro %}
+{% if page == 'overview' %}<p>Theo dõi hợp đồng, lớp tập và tình trạng vận hành.</p>
+{% elif page == 'classes' %}<p>Tạo buổi học nhóm và theo dõi sức chứa.</p>
+{% elif page == 'people' %}<p>Hồ sơ nhân sự, chức danh và phân vai.</p>
+{% elif page == 'reports' %}<p>Tổng hợp trên bộ dữ liệu minh họa của bản xem trước.</p>
+{% endif %}
+{% endblock %}
+{% block screen %}
+{% if page == 'overview' %}
+  <section class="preview-hero">
+    <h2>Vận hành phòng gym</h2>
+    <p>Xem tình trạng gói tập, lớp nhóm và phiếu bảo trì.</p>
+    {{ link('Mở thống kê', role, 'reports') }}
+  </section>
+  {{ metrics([('Gói đang hoạt động', membership_counts.ACTIVE, 'card'), ('Lớp nhóm', data.classes|length, 'calendar'),
+              ('Phiếu bảo trì đang mở', data.maintenance|rejectattr('3')|list|length, 'tool'),
+              ('Doanh thu minh họa', money(revenue.values()|sum), 'chart')]) }}
+  <div class="panel-grid">
+    {% call panel('Gói tập theo trạng thái') %}
+      {% for status in ('PENDING_PAYMENT', 'PENDING_ACTIVATION', 'ACTIVE', 'EXPIRED') %}
+      <div class="report-bar"><span>{{ badge(status) }}</span><strong>{{ membership_counts[status] }}</strong></div>
+      {% endfor %}
+      <div>{{ link('Xem danh sách hợp đồng', role, 'contracts') }}</div>
+    {% endcall %}
+    {% call panel('Công việc vận hành') %}
+      {{ link('Tra cứu hội viên', role, 'members') }}
+      {{ link('Kiểm tra tình trạng phòng tập', role, 'rooms') }}
+      {{ link('Mở danh sách phiếu bảo trì', role, 'maintenance') }}
+    {% endcall %}
+  </div>
+{% elif page == 'classes' %}
+  {% call panel('Danh sách lớp nhóm') %}
+    {% call table('Lớp nhóm và sức chứa', ['Lớp / loại', 'Huấn luyện viên', 'Phòng', 'Giờ tập', 'Sĩ số']) %}
+      {% for item in data.classes.values() %}
+      <tr><td><strong>{{ item.name }}</strong><br>{{ item.category }}</td><td>{{ item.trainer }}</td>
+        <td>{{ item.room }}</td><td>{{ item.date }}<br>{{ item.time }}</td><td>{{ occupancy(item) }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+  {% call panel('Tạo lớp nhóm') %}
+    {{ pending('Lịch mới sẽ cần kiểm tra trùng giờ, tình trạng HLV, phòng và sức chứa.') }}
+    {% call controls('Tạo lớp nhóm') %}
+      <div class="field-grid">
+        {{ field('class_name', 'Tên lớp', required=true, maxlength=100) }}
+        {{ field('class_category', 'Thể loại', required=true, maxlength=50) }}
+        {{ field('class_trainer', 'Huấn luyện viên', required=true, options=[('trainer-01', 'HLV Mẫu 01')]) }}
+        {{ field('class_room', 'Phòng', required=true, options=[('studio-a', 'Studio A'), ('studio-b', 'Studio B')]) }}
+        {{ field('class_start', 'Giờ bắt đầu', 'datetime-local', required=true) }}
+        {{ field('class_end', 'Giờ kết thúc', 'datetime-local', required=true) }}
+        {{ field('class_capacity', 'Sức chứa tối đa', 'number', required=true, minimum=1) }}
+      </div>
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'catalog' %}
+  <div class="panel-grid">
+    {% call panel('Mẫu gói tập') %}
+      {% call table('Mẫu gói tập', ['Tên gói', 'Thời hạn', 'Giá niêm yết', 'Thao tác']) %}
+        {% for item in data.plans.values() %}
+        <tr><td><strong>{{ item.name }}</strong></td><td>{{ item.months }} tháng</td><td>{{ money(item.price) }}</td>
+          <td>{{ locked('Sửa mẫu') }}</td></tr>
+        {% endfor %}
+      {% endcall %}
+      <div>{{ link('Xem cấu hình hạn mức', role, 'quotas') }}</div>
+    {% endcall %}
+    {% call panel('Danh mục dịch vụ') %}
+      {% call table('Danh mục dịch vụ', ['Tên dịch vụ', 'Mô tả']) %}
+        {% for name, description in data.services %}<tr><td>{{ name }}</td><td>{{ description }}</td></tr>{% endfor %}
+      {% endcall %}
+    {% endcall %}
+  </div>
+  <div class="panel-grid">
+    {% call panel('Tạo hoặc sửa mẫu gói') %}
+      {{ pending('Giá đã chốt trên hợp đồng được hiển thị độc lập. Ảnh hưởng của thay đổi thời hạn với gói đã mua đang chờ quyết định.') }}
+      {% call controls('Lưu mẫu gói') %}
+        <div class="field-grid">
+          {{ field('edit_plan', 'Mẫu cần sửa', help='Để trống khi tạo mẫu mới.', options=[('strength', 'Strength Plus'), ('studio', 'Studio Flow'), ('starter', 'Gym Starter')], full=true) }}
+          {{ field('plan_name', 'Tên gói', required=true, maxlength=100, full=true) }}
+          {{ field('plan_months', 'Số tháng', 'number', required=true, minimum=1) }}
+          {{ field('plan_price', 'Giá niêm yết (₫)', 'number', required=true, minimum=0) }}
+          {{ field('plan_description', 'Mô tả', 'textarea', maxlength=500, full=true) }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+    {% call panel('Thêm loại dịch vụ') %}
+      {{ pending() }}
+      {% call controls('Thêm dịch vụ') %}
+        {{ field('service_name', 'Tên dịch vụ', required=true, maxlength=100) }}
+        {{ field('service_description', 'Mô tả', 'textarea', maxlength=500) }}
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% elif page == 'quotas' %}
+  {% call panel('Hạn mức theo mẫu gói') %}
+    {% call table('Hạn mức dịch vụ theo chu kỳ', ['Mẫu gói', 'Dịch vụ', 'Hạn mức / chu kỳ']) %}
+      {% for plan in data.plans.values() %}
+        {% for service, allowance in plan.benefits %}<tr><td>{{ plan.name }}</td><td>{{ service }}</td><td>{{ quota(allowance) }}</td></tr>{% endfor %}
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+  {% call panel('Cấu hình hạn mức') %}
+    {{ pending('Áp dụng thay đổi cho các chu kỳ đã mua đang chờ quyết định.') }}
+    {% call controls('Lưu hạn mức') %}
+      <div class="field-grid">
+        {{ field('quota_plan', 'Mẫu gói', required=true, options=[('strength', 'Strength Plus'), ('studio', 'Studio Flow'), ('starter', 'Gym Starter')]) }}
+        {{ field('quota_service', 'Dịch vụ', required=true, options=[('gym', 'Tập tự do'), ('pt', 'PT cá nhân'), ('group', 'Lớp nhóm')]) }}
+        {{ field('quota_limit', 'Số lượt mỗi chu kỳ', 'number', required=true, minimum=-1, help='-1 là không giới hạn.') }}
+      </div>
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'people' %}
+  {% call panel('Danh sách nhân sự') %}
+    {% call table('Vai trò và tình trạng nhân sự', ['Mã', 'Họ và tên', 'Vai trò', 'Chức danh', 'Tình trạng']) %}
+      {% for code, name, roles_label, position, status in data.personnel %}
+      <tr><td>{{ code }}</td><td><strong>{{ name }}</strong></td><td>{{ roles_label }}</td>
+        <td>{{ position or '—' }}</td><td>{{ badge(status) }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+  <div class="panel-grid">
+    {% call panel('Tạo tài khoản nhân sự') %}
+      {{ pending() }}
+      {% call controls('Tạo tài khoản') %}
+        <div class="field-grid">
+          {{ field('person_name', 'Họ và tên', required=true, maxlength=100) }}
+          {{ field('person_ssn', 'CCCD', required=true, maxlength=12, inputmode='numeric', pattern='[0-9]{12}', help='Gồm 12 chữ số.') }}
+          {{ field('person_email', 'Email', 'email', required=true, maxlength=255) }}
+          {{ field('person_phone', 'Điện thoại', 'tel', required=true, maxlength=15) }}
+          {{ field('person_birth', 'Ngày sinh', 'date', required=true) }}
+          {{ field('person_gender', 'Giới tính', required=true, options=[('MALE', 'Nam'), ('FEMALE', 'Nữ'), ('OTHER', 'Khác')]) }}
+          {{ field('person_address', 'Địa chỉ', maxlength=255, full=true) }}
+          {{ field('person_password', 'Mật khẩu', 'password', required=true, autocomplete='new-password') }}
+          {{ field('person_role', 'Vai trò', required=true, options=[('trainer', 'Huấn luyện viên'), ('staff', 'Nhân viên')]) }}
+          {{ field('person_hire', 'Ngày bắt đầu làm việc', 'date', required=true) }}
+          {{ field('person_position', 'Chức danh Staff', help='Bắt buộc khi tạo vai trò Nhân viên.', maxlength=50) }}
+        </div>
+      {% endcall %}
+    {% endcall %}
+    <div class="d-grid gap-3">
+      {% call panel('Gán thêm vai trò') %}
+        {{ pending('Một person_id có thể có nhiều vai trò. Quyền gán vai trò chưa được tích hợp.') }}
+        {% call controls('Gán vai trò') %}
+          {{ field('existing_person', 'Mã cá nhân hiện có', required=true, options=[('HV-01', 'HV-01 · Hội viên Mẫu 01'), ('NS-02', 'NS-02 · HLV Mẫu 02')]) }}
+          {{ field('extra_role', 'Vai trò mới', required=true, options=[('trainer', 'Huấn luyện viên'), ('staff', 'Nhân viên')]) }}
+          {{ field('extra_role_hire', 'Ngày bắt đầu theo vai trò mới', 'date', required=true) }}
+          {{ field('extra_role_position', 'Chức danh Staff', help='Bắt buộc khi gán vai trò Nhân viên.', maxlength=50) }}
+        {% endcall %}
+      {% endcall %}
+      {% call panel('Chức danh và tình trạng làm việc') %}
+        {{ pending('Thay đổi tình trạng áp dụng theo vai trò được chọn.') }}
+        {% call controls('Cập nhật hồ sơ nhân sự') %}
+          {{ field('personnel_id', 'Nhân sự', required=true, options=[('NS-01', 'NS-01 · HLV Mẫu 01'), ('NS-03', 'NS-03 · Nhân viên Mẫu 03')]) }}
+          {{ field('employment_role', 'Vai trò áp dụng', required=true, options=[('trainer', 'Huấn luyện viên'), ('staff', 'Nhân viên')]) }}
+          {{ field('position', 'Chức danh Staff', maxlength=50) }}
+          {{ field('employment_status', 'Tình trạng', required=true, options=[('ACTIVE', 'Đang hoạt động'), ('ON_LEAVE', 'Nghỉ phép'), ('TERMINATED', 'Đã nghỉ việc')]) }}
+        {% endcall %}
+      {% endcall %}
+    </div>
+  </div>
+  {% call panel('Chứng chỉ huấn luyện viên') %}
+    {% call table('Chứng chỉ của từng HLV', ['Huấn luyện viên', 'Chứng chỉ', 'Thao tác']) %}
+      {% for name, gender, status, certificates in data.trainers %}
+        {% for item in certificates %}<tr><td>{{ name }}</td><td>{{ item }}</td><td>{{ locked('Xóa ' ~ item) }}</td></tr>{% endfor %}
+      {% endfor %}
+    {% endcall %}
+    {{ pending() }}
+    {% call controls('Thêm chứng chỉ') %}
+      <div class="field-grid">
+        {{ field('cert_trainer', 'Huấn luyện viên', required=true, options=[('NS-01', 'HLV Mẫu 01'), ('NS-02', 'HLV Mẫu 02')]) }}
+        {{ field('cert_name', 'Tên chứng chỉ', required=true, maxlength=100) }}
+      </div>
+    {% endcall %}
+  {% endcall %}
+{% elif page == 'assets' %}
+  <div class="panel-grid">
+    {% call panel('Phòng tập') %}
+      {% call table('Phòng hiện có', ['Tên phòng', 'Loại', 'Tình trạng']) %}
+        {% for name, kind, status in data.rooms %}<tr><td>{{ name }}</td><td>{{ kind }}</td><td>{{ badge(status) }}</td></tr>{% endfor %}
+      {% endcall %}
+      <div>{{ link('Vận hành phòng tập', role, 'rooms') }}</div>
+    {% endcall %}
+    {% call panel('Thiết bị') %}
+      {% call table('Thiết bị hiện có', ['Tên thiết bị', 'Serial', 'Vị trí', 'Tình trạng']) %}
+        {% for code, name, serial, room, status in data.equipment %}
+        <tr><td>{{ name }}</td><td>{{ serial }}</td><td>{{ room or 'Lưu kho' }}</td><td>{{ badge(status) }}</td></tr>
+        {% endfor %}
+      {% endcall %}
+      <div>{{ link('Vận hành thiết bị', role, 'equipment') }}</div>
+    {% endcall %}
+  </div>
+  <div class="panel-grid">
+    {% call panel('Thêm phòng mới', 'new-room') %}
+      {{ pending() }}
+      {% call controls('Thêm phòng') %}
+        {{ field('room_name', 'Tên phòng', required=true, maxlength=100, help='Tên phòng duy nhất.') }}
+        {{ field('room_type', 'Loại phòng', required=true, maxlength=30) }}
+      {% endcall %}
+    {% endcall %}
+    {% call panel('Thêm thiết bị mới', 'new-equipment') %}
+      {{ pending() }}
+      {% call controls('Thêm thiết bị') %}
+        {{ field('equipment_name', 'Tên thiết bị', required=true, maxlength=100) }}
+        {{ field('serial_number', 'Số serial', required=true, maxlength=50, help='Số serial duy nhất.') }}
+        {{ field('equipment_room', 'Vị trí', options=[('warehouse', 'Lưu kho'), ('studio-a', 'Studio A'), ('pt-zone', 'Khu PT')]) }}
+      {% endcall %}
+    {% endcall %}
+  </div>
+{% elif page == 'reports' %}
+  {% set total = revenue.values()|sum %}
+  {{ metrics([('Tổng doanh thu', money(total), 'chart'), ('Số hợp đồng', data.memberships|length, 'card'),
+              ('Chi phí phiếu đã hoàn tất', money(data.maintenance|selectattr('3')|sum(attribute=4)), 'tool')]) }}
+  <div class="panel-grid">
+    {% call panel('Doanh thu theo phương thức') %}
+      {% for method in ('CASH', 'BANK_TRANSFER') %}
+      <div class="report-bar">
+        <span>{{ payment_method(method) }}<br><strong>{{ money(revenue[method]) }}</strong></span>
+        <progress value="{{ revenue[method] }}" max="{{ total or 1 }}" aria-label="Doanh thu {{ payment_method(method) }}"></progress>
+      </div>
+      {% endfor %}
+    {% endcall %}
+    {% call panel('Chi phí bảo trì') %}
+      {{ facts([('Phiếu đã hoàn tất', money(data.maintenance|selectattr('3')|sum(attribute=4))), ('Tổng kể cả phiếu đang mở', '—')]) }}
+      <p class="preview-helper">Cách đưa chi phí của phiếu đang mở vào tổng đang chờ quyết định.</p>
+    {% endcall %}
+  </div>
+  {% call panel('Số gói theo trạng thái') %}
+    {% call table('Số gói theo trạng thái', ['Trạng thái', 'Số gói']) %}
+      {% for status in ('PENDING_PAYMENT', 'PENDING_ACTIVATION', 'ACTIVE', 'EXPIRED') %}
+      <tr><td>{{ badge(status) }}</td><td>{{ membership_counts[status] }}</td></tr>
+      {% endfor %}
+    {% endcall %}
+    {{ pending('Cơ chế tự hết hạn và nút quét thủ công chưa được kết nối.') }}
+    <div>{{ locked('Quét gói quá hạn') }}</div>
+  {% endcall %}
+{% endif %}
+{% endblock %}

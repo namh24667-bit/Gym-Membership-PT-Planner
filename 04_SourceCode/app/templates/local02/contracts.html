@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% from 'local04/ui.html' import contract_badge %}
+{% from 'local02/format.html' import day, money %}
+{% block title %}Hợp đồng{% endblock %}
+{% block content %}
+<section class="surface surface-wide">
+  <div class="surface-header"><h1>{{ profiles[0][1] if profiles else 'Hợp đồng và thu tiền' }}</h1></div>
+  <div class="form-fields">
+    {% if profiles %}
+      {% set profile = profiles[0] %}
+      <p>{{ profile[2] }} · {{ profile[3] }} · Tham gia {{ day(profile[4]) }}</p>
+      <p><a class="btn btn-outline-secondary" href="{{ url_for('pages.staff_members') }}">Về danh sách hội viên</a></p>
+    {% else %}
+      <form method="get" class="d-flex flex-wrap gap-2 align-items-center">
+        <label for="status">Trạng thái hợp đồng</label>
+        <select id="status" name="status" class="form-select w-auto">
+          <option value="">Tất cả</option>
+          {% for code, label in membership_status.items() %}<option value="{{ code }}"{% if selected_status == code %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <button type="submit" class="btn btn-outline-secondary">Lọc hợp đồng</button>
+      </form>
+    {% endif %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th scope="col">Hợp đồng</th><th scope="col">Hội viên</th><th scope="col">Gói tập</th><th scope="col">Trạng thái</th><th scope="col">Đã thu</th></tr></thead>
+        <tbody>{% for contract in records %}
+          <tr><td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.staff_contract', record_id=contract.id) }}">Xem hợp đồng #{{ contract.id }}</a></td>
+          <td>{{ contract.member_name }}</td><td>{{ contract.plan }}</td>
+          <td>{{ contract_badge(contract.status, contract.start, ui_today, membership_status) }}</td><td>{{ money(contract.paid) }}</td></tr>
+        {% else %}<tr><td colspan="5">Chưa có hợp đồng phù hợp.</td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

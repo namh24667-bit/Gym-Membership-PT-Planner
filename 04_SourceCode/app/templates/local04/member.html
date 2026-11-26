@@ -1,0 +1,57 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf, contract_badge, table, empty, badge, buttons, contact_fields %}
+{% from 'local02/format.html' import day, money, quota %}
+{% from 'local03/time.html' import moment %}
+{% block heading %}{{ profile.full_name }}{% endblock %}
+{% block intro %}<p>Hội viên #{{ profile.person_id }} · Tham gia {{ day(profile.join_date) }}</p>{% endblock %}
+{% block heading_actions %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.member_directory') }}">Danh sách hội viên</a>{% endblock %}
+{% block screen %}
+<nav class="section-links" aria-label="Các phần hồ sơ">
+  <a class="btn btn-outline-secondary" href="#contact">Thông tin liên hệ</a><a class="btn btn-outline-secondary" href="#contracts">Hợp đồng và biên lai</a>
+  <a class="btn btn-outline-secondary" href="#benefits">Quyền lợi</a><a class="btn btn-outline-secondary" href="#training">Lịch tập</a>
+</nav>
+<form id="contact" method="post" data-single-submit class="admin-section">
+  <h2>Thông tin liên hệ</h2>{{ csrf(token) }}
+  <input type="hidden" name="revision" value="{{ profile.revision }}">
+  <div class="field-grid">
+    {{ contact_fields(profile) }}
+    {{ field('emergency', 'Số liên hệ khẩn cấp', 'tel', required=true, maxlength=15, value=profile.emergency_contact_phone) }}
+  </div>
+  <button type="submit" class="btn action-button mt-3">Lưu thông tin</button>
+</form>
+<section class="admin-section" id="contracts">
+  <h2>Hợp đồng và biên lai</h2>
+  {% call table('Hợp đồng của hội viên', ['Hợp đồng', 'Gói', 'Trạng thái', 'Hết hạn', 'Thực thu', 'Biên lai']) %}
+  {% for item in contracts %}<tr>
+    <td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.staff_contract', record_id=item.id) }}">Xem hợp đồng #{{ item.id }}</a></td>
+    <td>{{ item.plan }}</td><td>{{ contract_badge(item.status, item.start, ui_today, membership_status) }}</td>
+    <td>{{ day(item.end) }}</td><td>{{ money(item.amount) }}</td><td>{% if item.payment_id %}
+      <a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.admin_receipt', contract_id=item.id) }}">Xem biên lai #{{ item.payment_id }}</a>{% else %}—{% endif %}</td>
+  </tr>{% else %}{{ empty(6) }}{% endfor %}
+  {% endcall %}
+</section>
+<section class="admin-section" id="benefits">
+  <h2>Quyền lợi của gói đang hiệu lực</h2>
+  {% call table('Định mức hiện tại', ['Dịch vụ', 'Định mức', 'Đã dùng', 'Còn lại']) %}
+  {% for item in benefits %}<tr><td>{{ item.service_name }}</td><td>{{ quota(item.quota_per_cycle) }}</td><td>{{ item.used }}</td>
+    <td>{{ quota(-1) if item.quota_per_cycle == -1 else [0, item.quota_per_cycle - item.used]|max }}</td></tr>
+  {% else %}{{ empty(4) }}{% endfor %}
+  {% endcall %}
+  {% if services %}<form method="post" action="{{ url_for('pages.use_member_service', member_id=profile.person_id) }}"
+                         data-single-submit data-confirm="Ghi nhận một lượt sử dụng dịch vụ cho hội viên này?">
+    {{ csrf(token) }}
+    {{ field('service', 'Dịch vụ lẻ', required=true, options=services) }}
+    <button type="submit" class="btn action-button mt-3">Ghi nhận lượt sử dụng</button>
+  </form>{% endif %}
+</section>
+<section class="admin-section" id="training">
+  <h2>Lịch PT và lớp nhóm</h2>
+  {% call table('Lịch tập của hội viên', ['Buổi tập', 'Thời gian', 'Trạng thái']) %}
+  {% for item in rows %}<tr><td>{{ item.label }}</td><td>{{ moment(item.start_time) }}</td>
+    <td>{{ 'Đã hủy' if item.booking_status == 'CANCEL' else 'Đã đăng ký' if item.kind == 'GROUP' else 'Đã đặt' }}</td></tr>
+  {% else %}{{ empty(3) }}{% endfor %}
+  {% endcall %}
+  {{ buttons(previous, following) }}
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf, table, empty, badge, buttons, contact_fields %}
+{% from 'local02/format.html' import day %}
+{% from 'local03/time.html' import interval %}
+{% block heading %}{{ profile.full_name if profile else 'Gán vai trò cho tài khoản' if assign else 'Tạo tài khoản nhân sự' }}{% endblock %}
+{% block screen %}
+<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.personnel_list') }}">Về danh sách nhân sự</a></p>
+{% if profile %}
+  <p>#{{ profile.person_id }} · {{ personnel_roles[role] }} · Vào làm {{ day(profile.hire_date) }}
+     · {{ badge(employment[profile.employment_status], profile.employment_status) }}</p>
+  {% if not editable %}<p>{{ profile.email }} · {{ profile.phone }} · {{ profile.position or personnel_roles[role] }}</p>{% endif %}
+{% endif %}
+{% if not profile or editable %}
+<form method="post" data-single-submit{% if profile or assign %} data-confirm="Xác nhận thay đổi hồ sơ và quyền của nhân sự này?"{% endif %}>
+  {{ csrf(token) }}
+  <div class="field-grid">
+  {% if assign %}{{ field('person_id', 'Mã cá nhân đã có trong hệ thống', 'number', required=true, minimum=1) }}
+  {% else %}{{ contact_fields(profile) }}{% endif %}
+  {% if not profile %}
+    {{ field('role', 'Vai trò', required=true, options=personnel_roles.items()) }}
+    {{ field('hire', 'Ngày vào làm', 'date', required=true) }}
+    {% if not assign %}
+      {{ field('ssn', 'CCCD', required=true, maxlength=12, pattern='[0-9]{12}', inputmode='numeric') }}
+      {{ field('birth', 'Ngày sinh', 'date', required=true) }}
+      {{ field('gender', 'Giới tính', required=true, options=[('MALE', 'Nam'), ('FEMALE', 'Nữ'), ('OTHER', 'Khác')]) }}
+      {{ field('password', 'Mật khẩu', 'password', required=true, maxlength=128, autocomplete='new-password') }}
+      {{ field('confirm_password', 'Xác nhận mật khẩu', 'password', required=true, maxlength=128, autocomplete='new-password') }}
+    {% endif %}
+  {% else %}
+    {{ field('status', 'Tình trạng làm việc', required=true, options=employment.items(), value=profile.employment_status) }}
+  {% endif %}
+  {% if not profile or role == 'staff' %}{{ field('position', 'Chức danh nhân viên', maxlength=50, required=role == 'staff',
+      value=profile.position if profile else none, help='Chức danh Quản lý cấp quyền vào khu quản lý.') }}{% endif %}
+  </div>
+  <button type="submit" class="btn action-button mt-3">{{ 'Lưu thay đổi' if profile else 'Gán vai trò' if assign else 'Tạo tài khoản' }}</button>
+</form>
+{% endif %}
+{% if profile and role == 'trainer' %}
+<section class="admin-section">
+  <h2>Lịch được phân công</h2>
+  <p><a class="btn btn-outline-secondary" href="{{ url_for('pages.trainer_cert_admin', person_id=profile.person_id) }}">Quản lý chứng chỉ</a></p>
+  {% call table('Lịch của huấn luyện viên', ['Buổi tập', 'Thời gian', 'Phòng']) %}
+  {% for row in rows %}<tr><td>{{ row.class_name or 'PT cá nhân' }}</td><td>{{ interval(row.start_time, row.end_time) }}</td><td>{{ row.room_name }}</td></tr>
+  {% else %}{{ empty(3) }}{% endfor %}{% endcall %}
+  {{ buttons(previous, following) }}
+</section>
+{% endif %}
+{% endblock %}

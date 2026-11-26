@@ -1,0 +1,25 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf, table, empty, badge %}
+{% from 'local02/format.html' import day %}
+{% block heading %}Chứng chỉ huấn luyện viên{% endblock %}
+{% block screen %}
+<p>HLV #{{ person_id }} · Ngày vào làm {{ day(rows[0].hire_date) }}
+   · {{ badge(employment[rows[0].employment_status], rows[0].employment_status) }}</p>
+{% if rows[0].employment_status != 'ACTIVE' %}<p>Trạng thái hiện tại chưa cho phép phân công lịch mới.</p>{% endif %}
+{% call table('Danh sách chứng chỉ', ['Chứng chỉ', 'Thao tác']) %}
+{% for row in rows if row.certification %}<tr><td>{{ row.certification }}</td><td>
+  <form method="post" data-single-submit data-confirm="Xóa chứng chỉ này khỏi hồ sơ?">
+    {{ csrf(token) }}<input type="hidden" name="operation" value="cert_remove">
+    <input type="hidden" name="certificate" value="{{ row.certification }}">
+    <button type="submit" class="btn btn-outline-danger" aria-label="Xóa {{ row.certification }}">Xóa chứng chỉ</button>
+  </form>
+</td></tr>{% else %}{{ empty(2, 'Chưa có chứng chỉ.') }}{% endfor %}{% endcall %}
+<form method="post" data-single-submit class="admin-section">
+  {{ csrf(token) }}<input type="hidden" name="operation" value="cert_add">
+  {{ field('certificate', 'Tên chứng chỉ', required=true, maxlength=100) }}
+  <button type="submit" class="btn action-button mt-3">Thêm chứng chỉ</button>
+</form>
+<p>{% if own %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.trainer_schedule') }}">Về lịch dạy</a>
+{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('pages.personnel_detail', person_id=person_id, role='trainer') }}">Về hồ sơ HLV</a>{% endif %}</p>
+{% endblock %}

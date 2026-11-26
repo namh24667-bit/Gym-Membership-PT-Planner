@@ -1,0 +1,37 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import table, empty, contract_badge, buttons, dates %}
+{% from 'local02/format.html' import day, money %}
+{% from 'local03/time.html' import moment %}
+{% block heading %}{{ 'Thanh toán và biên lai' if kind == 'payments' else 'Danh sách hợp đồng' }}{% endblock %}
+{% block intro %}<p>{{ 'Lọc theo ngày thu tiền.' if kind == 'payments' else 'Lọc theo ngày lập hợp đồng.' }}</p>{% endblock %}
+{% block screen %}
+<form method="get" class="filter-bar">
+  {{ field('q', 'Mã, tên hội viên, email hoặc gói tập', value=query, maxlength=100, full=true) }}
+  {{ dates(start, end) }}
+  {{ field('status', 'Trạng thái hợp đồng', options=membership_status.items(), value=status) }}
+  {% if kind == 'payments' %}{{ field('method', 'Phương thức thu', options=payment_method.items(), value=method) }}{% endif %}
+  <div class="page-actions"><button type="submit" class="btn btn-outline-secondary">Lọc danh sách</button></div>
+</form>
+{% if kind == 'payments' %}
+  {% call table('Thanh toán', ['Biên lai', 'Hội viên / hợp đồng', 'Thời điểm', 'Thực thu', 'Phương thức', 'Trạng thái gói', 'Người ghi nhận']) %}
+  {% for row in rows %}<tr>
+    <td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.admin_receipt', contract_id=row.membership_id) }}">Xem biên lai #{{ row.payment_id }}</a></td>
+    <td>{{ row.full_name }}<br><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.staff_contract', record_id=row.membership_id) }}">Xem hợp đồng #{{ row.membership_id }}</a></td>
+    <td>{{ moment(row.payment_time) }}</td><td>{{ money(row.amount) }}</td><td>{{ payment_method[row.payment_method] }}</td>
+    <td>{{ contract_badge(row.status, row.start_date, ui_today, membership_status) }}</td>
+    <td>{{ row.recorded_by or 'Chưa lưu' }}</td>
+  </tr>{% else %}{{ empty(7) }}{% endfor %}
+  {% endcall %}
+{% else %}
+  {% call table('Hợp đồng', ['Mã', 'Hội viên', 'Gói', 'Ngày lập', 'Trạng thái', 'Giá trị đã chốt']) %}
+  {% for row in rows %}<tr>
+    <td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.staff_contract', record_id=row.membership_id) }}">Xem hợp đồng #{{ row.membership_id }}</a></td>
+    <td><a class="btn btn-outline-secondary row-action" href="{{ url_for('pages.member_profile', member_id=row.person_id) }}">{{ row.full_name }}</a></td>
+    <td>{{ row.plan_name }}</td><td>{{ day(row.created_at) }}</td><td>{{ contract_badge(row.status, row.start_date, ui_today, membership_status) }}</td>
+    <td>{{ money(row.total_price) }}</td>
+  </tr>{% else %}{{ empty(6) }}{% endfor %}
+  {% endcall %}
+{% endif %}
+{{ buttons(previous, following) }}
+{% endblock %}

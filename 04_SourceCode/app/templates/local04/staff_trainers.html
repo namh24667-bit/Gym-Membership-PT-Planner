@@ -1,0 +1,35 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import action_link, field %}
+{% from 'local04/ui.html' import badge %}
+{% from 'local04/staff_directory_ui.html' import pagination %}
+{% from 'local03/time.html' import moment %}
+{% block heading %}Tra cứu huấn luyện viên{% endblock %}
+{% block intro %}<p>Tìm chứng chỉ, trạng thái làm việc và buổi dạy sắp tới theo từng huấn luyện viên.</p>{% endblock %}
+{% block screen %}
+<form method="get" class="filter-bar" aria-label="Tìm huấn luyện viên">
+  {{ field('q', 'Tên hoặc mã HLV', value=query, maxlength=100) }}
+  {{ field('status', 'Trạng thái làm việc', options=employment.items(), value=state) }}
+  <button class="btn btn-outline-secondary" type="submit">Tìm HLV</button>
+  {% if query or state %}{{ action_link(url_for('pages.staff_trainers'), 'Xóa bộ lọc') }}{% endif %}
+</form>
+{{ pagination(total, page, page_count, previous, following) }}
+{% if rows %}
+<ul class="directory-cards">
+  {% for trainer in rows %}
+  <li class="workspace-panel">
+    <header class="panel-heading"><div><p class="field-help mb-1">HLV #{{ trainer.id }}</p><h2>{{ trainer.name }}</h2></div>
+      {{ badge(employment[trainer.status], trainer.status) }}</header>
+    <dl class="directory-facts">
+      <dt>Chứng chỉ</dt><dd>{% if trainer.certifications %}{{ trainer.certifications.splitlines()|join(' · ') }}{% else %}Chưa ghi nhận{% endif %}</dd>
+      <dt>Buổi dạy tiếp theo</dt><dd>{% if trainer.next_time %}{{ moment(trainer.next_time) }} · {{ trainer.next_class or 'PT cá nhân' }}
+        {% else %}Chưa có buổi công bố{% endif %}</dd>
+    </dl>
+    <div class="page-actions">
+      {{ action_link(url_for('pages.staff_trainer', trainer_id=trainer.id), 'Xem hồ sơ', accessible_name='Xem hồ sơ ' ~ trainer.name) }}
+      {{ action_link(url_for('pages.staff_trainer', trainer_id=trainer.id, _anchor='teaching'), 'Xem lịch dạy', accessible_name='Xem lịch dạy ' ~ trainer.name) }}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}<p class="empty-panel">Không tìm thấy huấn luyện viên phù hợp.</p>{% endif %}
+{% endblock %}

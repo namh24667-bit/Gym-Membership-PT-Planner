@@ -1,0 +1,25 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import table, empty, badge, buttons %}
+{% from 'local02/format.html' import day %}
+{% block heading %}Nhân viên và huấn luyện viên{% endblock %}
+{% block heading_actions %}<div class="page-actions">
+  <a class="btn action-button" href="{{ url_for('pages.personnel_create') }}">Tạo tài khoản nhân sự</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('pages.personnel_assign') }}">Gán thêm vai trò</a>
+</div>{% endblock %}
+{% block screen %}
+<form method="get" class="field-grid">
+  {{ field('q', 'Tên, email hoặc điện thoại', value=query, maxlength=100) }}
+  {{ field('role', 'Vai trò', options=personnel_roles.items(), value=role) }}
+  {{ field('status', 'Tình trạng', options=employment.items(), value=status) }}
+  <div class="align-self-end"><button class="btn btn-outline-secondary" type="submit">Tìm nhân sự</button></div>
+</form>
+{% call table('Danh sách nhân sự', ['Mã', 'Họ và tên', 'Vai trò', 'Chức danh', 'Ngày vào làm', 'Tình trạng']) %}
+{% for item in rows %}<tr>
+  <td>#{{ item.person_id }}</td><td><strong>{{ item.full_name }}</strong><br><a class="btn btn-outline-secondary row-action mt-1" aria-label="Xem hồ sơ {{ item.full_name }}" href="{{ url_for('pages.personnel_detail', person_id=item.person_id, role=item.role_code) }}">Xem hồ sơ</a></td>
+  <td>{{ personnel_roles[item.role_code] }}</td><td>{{ item.position or '—' }}</td><td>{{ day(item.hire_date) }}</td>
+  <td>{{ badge(employment[item.employment_status], item.employment_status) }}</td>
+</tr>{% else %}{{ empty(6) }}{% endfor %}
+{% endcall %}
+{{ buttons(previous, following) }}
+{% endblock %}

@@ -1,0 +1,10 @@
+{% macro mark() -%}
+<img class="brand-mark" src="{{ url_for('static', filename='ironpulse-mark.svg') }}" width="38" height="38" alt="">
+{%- endmacro %}
+
+{% macro brand(href, class_name='brand') -%}
+<a class="{{ class_name }}" href="{{ href }}" aria-label="IronPulse · Trang chủ">
+  {{ mark() }}
+  <span><strong>IronPulse</strong><small>QUẢN LÝ PHÒNG GYM</small></span>
+</a>
+{%- endmacro %}

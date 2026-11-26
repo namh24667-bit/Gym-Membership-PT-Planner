@@ -1,0 +1,8 @@
+{% from 'local04/ui.html' import buttons, badge %}
+{% macro pagination(total, page, page_count, previous, following) %}
+<div class="panel-heading directory-pagination">
+  <p class="mb-0">{{ total }} kết quả · Trang {{ page }}/{{ page_count }}</p>
+  {{ buttons(previous, following) }}
+</div>
+{% endmacro %}
+{% macro class_status(state, states) %}{{ badge(states[state][0], states[state][1]) }}{% endmacro %}

@@ -1,0 +1,23 @@
+{% from 'components.html' import field %}
+{% set entered = values|default({}) %}
+<fieldset class="form-group">
+  <legend>Thông tin cá nhân</legend>
+  <div class="field-grid">
+    {{ field('full_name', 'Họ và tên', required=true, maxlength=100, autocomplete='name', value=entered.get('full_name')) }}
+    {{ field('ssn', 'Số CCCD', required=true, help='Gồm 12 chữ số.', maxlength=12, pattern='[0-9]{12}', inputmode='numeric', value=entered.get('ssn')) }}
+    {{ field('date_of_birth', 'Ngày sinh', 'date', required=true, help='Hội viên phải đủ 15 tuổi.', autocomplete='bday', value=entered.get('date_of_birth')) }}
+    {{ field('gender', 'Giới tính', required=true, options=[('MALE', 'Nam'), ('FEMALE', 'Nữ'), ('OTHER', 'Khác')], value=entered.get('gender') or none) }}
+    {{ field('address', 'Địa chỉ', maxlength=255, autocomplete='street-address', full=true, value=entered.get('address')) }}
+  </div>
+</fieldset>
+<fieldset class="form-group">
+  <legend>Tài khoản và liên hệ</legend>
+  <div class="field-grid">
+    {{ field('email', 'Email', 'email', required=true, maxlength=255, autocomplete='email', value=entered.get('email')) }}
+    {{ field('password', 'Mật khẩu', 'password', required=true, autocomplete='new-password', help='Từ 12 đến 128 ký tự.', maxlength=128) }}
+    {{ field('confirm_password', 'Xác nhận mật khẩu', 'password', required=true, autocomplete='new-password', maxlength=128) }}
+    {{ field('phone', 'Số điện thoại', 'tel', required=true, maxlength=15, autocomplete='tel', value=entered.get('phone')) }}
+    {{ field('emergency_contact_phone', 'Số điện thoại khẩn cấp', 'tel', required=true, help='Dùng số khác số điện thoại của hội viên.', maxlength=15, value=entered.get('emergency_contact_phone')) }}
+    {{ field('health_notes', 'Ghi chú sức khỏe', 'textarea', maxlength=500, full=true, value=entered.get('health_notes')) }}
+  </div>
+</fieldset>

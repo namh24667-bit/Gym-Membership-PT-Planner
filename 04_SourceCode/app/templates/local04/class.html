@@ -1,0 +1,26 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import field %}
+{% from 'local04/ui.html' import csrf %}
+{% from 'local03/time.html' import interval %}
+{% block heading %}{{ item.class_name }}{% endblock %}
+{% block intro %}<p>{{ item.category }} · {{ item.full_name }} · {{ item.room_name }} · {{ interval(item.start_time, item.end_time) }}</p>{% endblock %}
+{% block screen %}
+<p><a class="btn btn-outline-secondary" href="{{ url_for('pages.management_schedule') }}">Về lịch lớp</a></p>
+<p>{{ item.current_enrollment }}/{{ item.max_capacity }} chỗ đang được giữ.</p>
+{% if upcoming %}
+  {% if item.has_history %}<p>Lớp đã có lịch sử đặt chỗ. Có thể điều chỉnh sức chứa.</p>{% endif %}
+  <form method="post" data-single-submit data-confirm="Xác nhận cập nhật lớp nhóm?">
+    {{ csrf(token) }}<div class="field-grid">
+    {% if not item.has_history %}
+      {{ field('name', 'Tên lớp', required=true, maxlength=100, value=item.class_name) }}
+      {{ field('category', 'Thể loại', required=true, maxlength=50, value=item.category) }}
+      {{ field('trainer', 'Huấn luyện viên', required=true, options=trainer_options, value=item.trainer_id) }}
+      {{ field('room', 'Phòng', required=true, options=room_options, value=item.room_id) }}
+      {{ field('start', 'Bắt đầu', 'datetime-local', required=true, value=item.start_time.strftime('%Y-%m-%dT%H:%M')) }}
+      {{ field('end', 'Kết thúc', 'datetime-local', required=true, value=item.end_time.strftime('%Y-%m-%dT%H:%M')) }}
+    {% endif %}
+    {{ field('capacity', 'Sức chứa tối đa', 'number', required=true, minimum=[1,item.current_enrollment]|max, value=item.max_capacity) }}
+    </div><button class="btn action-button mt-3" type="submit">Lưu lớp nhóm</button>
+  </form>
+{% else %}<p>Buổi tập đã bắt đầu. Lịch và sĩ số được giữ để tra cứu.</p>{% endif %}
+{% endblock %}

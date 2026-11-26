@@ -1,0 +1,55 @@
+{% extends 'local04/layout.html' %}
+{% from 'components.html' import action_link, field %}
+{% from 'local03/time.html' import interval %}
+{% from 'local04/ui.html' import badge, csrf %}
+{% block heading %}{{ item.name or 'Buổi PT cá nhân' }}{% endblock %}
+{% block heading_actions %}{{ action_link(url_for('pages.trainer_schedule'), 'Về lịch dạy') }}{% endblock %}
+{% block screen %}
+<div class="portal-grid">
+  <section class="workspace-panel">
+    <h2>Thông tin buổi tập</h2>
+    <p class="teaching-time"><time datetime="{{ item.start.isoformat() }}">{{ interval(item.start, item.end) }}</time></p>
+    <dl class="record-details">
+      <dt>Trạng thái lịch</dt><dd>{{ badge(states[item.state][0], states[item.state][1]) }}</dd>
+      <dt>Phòng tập</dt><dd>{{ item.room }}</dd>
+      {% if item.kind == 'GROUP' %}
+      <dt>Tình trạng đăng ký</dt><dd>{{ badge(class_states[item.class_state][0], class_states[item.class_state][1]) }}</dd>
+      <dt>Sức chứa</dt><dd>{{ item.capacity }} học viên</dd>
+      <dt>Đã đăng ký</dt><dd>{{ item.enrolled }} học viên</dd>
+      <dt>Còn lại</dt><dd>{{ item.remaining }} chỗ</dd>
+      {% endif %}
+    </dl>
+  </section>
+  {% if item.kind == 'PERSONAL' %}
+  <section class="workspace-panel">
+    <h2>Hội viên được phân công</h2>
+    <dl class="record-details">
+      <dt>Họ và tên</dt><dd class="teaching-member">{{ item.member }}</dd>
+      <dt>Mã hội viên</dt><dd>#{{ item.member_id }}</dd>
+      <dt>Điện thoại</dt><dd class="teaching-contact">
+        {% if phone_href %}<a class="btn btn-outline-secondary" href="{{ phone_href }}">{{ item.phone }}</a>
+        {% else %}Chưa có số điện thoại khả dụng cho buổi này.{% endif %}
+      </dd>
+    </dl>
+  </section>
+  {% else %}
+  <section class="workspace-panel">
+    <h2>Danh sách học viên</h2>
+    <p>Danh sách gồm các lượt đăng ký còn hiệu lực. Tình trạng tham dự chưa được ghi nhận tại đây.</p>
+    {{ action_link(url_for('pages.trainer_roster', record_id=item.id), 'Xem danh sách học viên', primary=true) }}
+  </section>
+  {% endif %}
+</div>
+{% if item.kind == 'PERSONAL' %}
+<section class="workspace-panel mt-3">
+  <h2>Mục tiêu buổi tập</h2>
+  {% if item.employment == 'ACTIVE' %}
+  <form method="post" action="{{ url_for('pages.trainer_schedule_detail', record_id=item.id) }}" data-single-submit>
+    {{ csrf(token) }}
+    {{ field('focus', 'Mục tiêu PT', value=item.focus, required=true, maxlength=200) }}
+    <button type="submit" class="btn action-button mt-2">Lưu mục tiêu</button>
+  </form>
+  {% else %}<p>{{ item.focus }}</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}
