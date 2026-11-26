@@ -1,17 +1,18 @@
 # IronPulse – Hệ thống quản lý phòng Gym
 
 **Học phần** INT1313 – Cơ sở dữ liệu  
+**Lớp** D24CQCN02-N
 **Đề tài** 9  
 **Nhóm** Tam Thái Tử  
-**Giảng viên hướng dẫn** Lê Hà Thanh
+**Giảng viên hướng dẫn** Lê Hà Thanh(lehathanh@ptithcm.edu.vn)
 
-| Thành viên | Mã sinh viên |
-|---|---|
-| Lê Bảo Khanh | N24DCCN130 |
-| Ngô Thanh Lực | N24DCCN139 |
-| Nguyễn Hoài Nam | N24DCCN141 |
+| Thành viên | Mã sinh viên | Lớp
+|---|---|---|
+| Lê Bảo Khanh | N24DCCN130 | D24CQCN02-N
+| Ngô Thanh Lực | N24DCCN139 | D24CQCN02-N
+| Nguyễn Hoài Nam | N24DCCN141 | D24CQCN02-N
 
-IronPulse quản lý hội viên, gói tập, hợp đồng, khoản thu mô phỏng, lịch huấn luyện cá nhân (PT), lớp nhóm và thiết bị. Thiết kế cơ sở dữ liệu chính thức của đồ án gồm 18 bảng nghiệp vụ. Ứng dụng dùng Flask, Jinja và Bootstrap. Python kết nối SQL Server Express qua pyodbc và ODBC Driver 18.
+IronPulse là hệ thống cơ sở dữ liệu quản lý phòng gym, được xây dựng nhằm đáp ứng các yêu cầu nghiệp vụ cốt lõi của một phòng gym quy mô vừa và nhỏ, bao gồm: quản lý hội viên và gói tập, lập lịch buổi tập, kiểm soát thiết bị và ghi nhận thanh toán. Thiết kế cơ sở dữ liệu chính thức của đồ án gồm 18 bảng nghiệp vụ. Ứng dụng dùng Flask, Jinja và Bootstrap. Python kết nối SQL Server Express qua pyodbc và ODBC Driver 18.
 
 ## Hồ sơ đồ án
 
