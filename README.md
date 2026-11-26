@@ -26,9 +26,9 @@
 
 ## Giới thiệu đề tài
 
-Nhóm xây dựng hệ thống IronPulse để quản lý hội viên, gói tập, hợp đồng, thanh toán mô phỏng, lịch tập với huấn luyện viên, lớp tập nhóm và bảo trì thiết bị.
+IronPulse là hệ thống quản lý phòng gym được nhóm xây dựng trong học phần Cơ sở dữ liệu. Đề tài xuất phát từ nhu cầu quản lý thông tin hội viên, gói tập, hợp đồng và các khoản thanh toán tại phòng gym. Hệ thống còn hỗ trợ đặt lịch tập cá nhân với huấn luyện viên (PT), đăng ký lớp tập nhóm và theo dõi tình trạng thiết bị, lịch sử bảo trì.
 
-Cơ sở dữ liệu gồm 18 bảng nghiệp vụ, sử dụng SQL Server Express. Phần ứng dụng được xây dựng bằng Python với Flask, Jinja và Bootstrap, kết nối cơ sở dữ liệu qua pyodbc và ODBC Driver 18.
+Trọng tâm của đồ án là xử lý các trường hợp trùng lịch tập, vượt sức chứa của lớp và lưu trữ lịch sử thanh toán khi hội viên đăng ký hoặc gia hạn gói tập. Cơ sở dữ liệu gồm 18 bảng nghiệp vụ trên SQL Server Express, sử dụng các ràng buộc, trigger và thủ tục lưu trữ để kiểm soát dữ liệu. Ứng dụng được xây dựng bằng Python, Flask, Jinja và Bootstrap, kết nối với SQL Server qua pyodbc và ODBC Driver 18. Hệ thống phân quyền theo bốn vai trò gồm hội viên, nhân viên, huấn luyện viên và quản lý để phục vụ các công việc tương ứng.
 
 ## Hồ sơ đồ án
 
