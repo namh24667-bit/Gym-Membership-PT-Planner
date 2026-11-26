@@ -1,18 +1,34 @@
-# IronPulse – Hệ thống quản lý phòng Gym
+# IronPulse - Hệ thống quản lý phòng gym
 
-**Học phần** INT1313 – Cơ sở dữ liệu  
-**Lớp** D24CQCN02-N
-**Đề tài** 9  
-**Nhóm** Tam Thái Tử  
-**Giảng viên hướng dẫn** Lê Hà Thanh(lehathanh@ptithcm.edu.vn)
+## Thông tin đồ án
 
-| Thành viên | Mã sinh viên | Lớp
+| Nội dung | Thông tin |
+|---|---|
+| Trường | Học viện Công nghệ Bưu chính Viễn thông cơ sở TP.HCM |
+| Học phần | INT1313 - Cơ sở dữ liệu |
+| Nhóm học phần | 4 |
+| Năm học | 2026-2027 |
+| Học kỳ | 1 |
+| Lớp | D24CQCN02-N |
+| Khóa | D24 (tuyển sinh năm 2024) |
+| Đề tài | 9 |
+| Nhóm thực hiện | Tam Thái Tử |
+| Giảng viên hướng dẫn | Lê Hà Thanh |
+| Email giảng viên | lehathanh@ptithcm.edu.vn |
+
+## Thành viên nhóm
+
+| Họ và tên | Mã sinh viên | Lớp |
 |---|---|---|
-| Lê Bảo Khanh | N24DCCN130 | D24CQCN02-N
-| Ngô Thanh Lực | N24DCCN139 | D24CQCN02-N
-| Nguyễn Hoài Nam | N24DCCN141 | D24CQCN02-N
+| Lê Bảo Khanh | N24DCCN130 | D24CQCN02-N |
+| Ngô Thanh Lực | N24DCCN139 | D24CQCN02-N |
+| Nguyễn Hoài Nam | N24DCCN141 | D24CQCN02-N |
 
-IronPulse là hệ thống cơ sở dữ liệu quản lý phòng gym, được xây dựng nhằm đáp ứng các yêu cầu nghiệp vụ cốt lõi của một phòng gym quy mô vừa và nhỏ, bao gồm: quản lý hội viên và gói tập, lập lịch buổi tập, kiểm soát thiết bị và ghi nhận thanh toán. Thiết kế cơ sở dữ liệu chính thức của đồ án gồm 18 bảng nghiệp vụ. Ứng dụng dùng Flask, Jinja và Bootstrap. Python kết nối SQL Server Express qua pyodbc và ODBC Driver 18.
+## Giới thiệu đề tài
+
+Nhóm xây dựng hệ thống IronPulse để quản lý hội viên, gói tập, hợp đồng, thanh toán mô phỏng, lịch tập với huấn luyện viên, lớp tập nhóm và bảo trì thiết bị.
+
+Cơ sở dữ liệu gồm 18 bảng nghiệp vụ, sử dụng SQL Server Express. Phần ứng dụng được xây dựng bằng Python với Flask, Jinja và Bootstrap, kết nối cơ sở dữ liệu qua pyodbc và ODBC Driver 18.
 
 ## Hồ sơ đồ án
 
@@ -25,6 +41,6 @@ IronPulse là hệ thống cơ sở dữ liệu quản lý phòng gym, được 
 | 05 Hướng dẫn | [Cài đặt](05_HuongDan/HuongDan_CaiDat.md) · [Sử dụng](05_HuongDan/HuongDan_SuDung.md) · [Kiểm chứng SQL](05_HuongDan/HuongDan_KiemChung_SQL.md) |
 | 06 Bản cài | [ZIP cài mới v1.0.1](06_BanCaiDat/IronPulse_v1.0.1.zip) · [SHA-256](06_BanCaiDat/SHA256.txt) |
 
-Mở báo cáo bằng Word. Để xem mô hình dữ liệu, mở file bằng Draw.io và chọn trang **Sơ đồ cơ sở dữ liệu** (ERD). Bộ SQL học thuật có kết quả tham chiếu 13.658 dòng mô phỏng trên 18 bảng trong cơ sở dữ liệu riêng `IronPulse_SubmissionQA`.
+Báo cáo được lưu dưới dạng Word. Sơ đồ cơ sở dữ liệu (ERD) nằm trong trang **Sơ đồ cơ sở dữ liệu** của tệp Draw.io. Bộ SQL học thuật sử dụng cơ sở dữ liệu riêng `IronPulse_SubmissionQA`, với 13.658 dòng dữ liệu mô phỏng trên 18 bảng theo kết quả kiểm chứng của nhóm.
 
-Để chạy website trên Windows, kiểm SHA-256 của ZIP, giải nén và làm theo hướng dẫn cài đặt ở trên. Bộ cài tạo cơ sở dữ liệu và tài khoản trình diễn riêng cho website.
+Để chạy ứng dụng trên Windows, tải bộ cài ZIP, kiểm tra mã SHA-256, giải nén và làm theo hướng dẫn cài đặt. Bộ cài tạo cơ sở dữ liệu và tài khoản trình diễn riêng cho ứng dụng.
