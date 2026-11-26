@@ -107,7 +107,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="Sơ đồ UML - Phase 1" id="f02er">
-    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1890" pageHeight="1410" math="0" shadow="0">
+    <mxGraphModel dx="2572" dy="972" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1890" pageHeight="1410" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1448,7 +1448,7 @@
         <mxCell id="HVl_KQ-kCMY72vYe2atb-547" parent="HVl_KQ-kCMY72vYe2atb-268" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="OWN" vertex="1">
           <mxGeometry height="30" width="60" x="1240" y="902.75" as="geometry" />
         </mxCell>
-        <mxCell id="HVl_KQ-kCMY72vYe2atb-549" parent="HVl_KQ-kCMY72vYe2atb-268" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="1..*" vertex="1">
+        <mxCell id="HVl_KQ-kCMY72vYe2atb-549" parent="HVl_KQ-kCMY72vYe2atb-268" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
           <mxGeometry height="30" width="60" x="1195.9" y="959.75" as="geometry" />
         </mxCell>
         <mxCell id="HVl_KQ-kCMY72vYe2atb-534" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="{total, overlapping}" vertex="1">
